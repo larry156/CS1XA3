@@ -1,3 +1,3 @@
 chicken
-cow
+bird
 pig
