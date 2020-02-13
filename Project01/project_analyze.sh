@@ -19,7 +19,7 @@ fixme_log() {
 		rm "fixme.log"
 	fi
 	touch "fixme.log"
-	fileList=$(find "$repoRoot" -type d -name '.git' -prune -o -type f -print) # from https://unix.stackexchange.com/a/350090
+	fileList=$(find "$repoRoot" -type d -name '.git' -prune -o -type f -print) # Ignore the .git directory
 	IFS=$'\n' # Filepaths might have spaces in them, which breaks the for loop
 	for file in $fileList ; do
 		lastLine=$(tail -n 1 "$file")
