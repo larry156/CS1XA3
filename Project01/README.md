@@ -32,5 +32,6 @@
     Description: This feature will check if there is a file named "forbidden-text.txt" in the Project01 folder of the repo. If this file doesn't exist, the 
         script will throw an error and exit, prompting the user to create it. Otherwise, the script will prompt the user for a path to a file, and then prompt them
         for a string. If the user does not enter a custom string, the script will replace any string in the user's file that matches any line in forbidden-text.txt
-        with "[REDACTED]". Otherwise, it will just replace any forbidden text with the user's custom string, enclosed in square brackets. If a file named "censor_exclude.txt" exists, the script will throw an error if the path the user enters matches any line in this file (i.e. the script will not modify any files listed within).
+        with "[REDACTED]". Otherwise, it will just replace any forbidden text with the user's custom string, enclosed in square brackets. 
+		If a file named "censor_exclude.txt" exists, the script will throw an error if the path the user enters matches any line in this file (i.e. the script will not modify any files listed within).
     Execution: Input "censor_file" (without the quotes) when prompted, then input a path to a file, and any string, as prompted.

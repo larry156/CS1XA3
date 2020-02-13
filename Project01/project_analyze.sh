@@ -3,6 +3,8 @@
 # Find the path to the root directory of this repo
 repoRoot=$(git rev-parse --show-toplevel)
 #echo "Repo root is $repoRoot"
+# Navigate to the Project01 directory
+cd "$repoRoot/Project01"
 
 # Find the latest commit with the word "merge" in its commit message and check it out
 checkout_latest_merge() {
