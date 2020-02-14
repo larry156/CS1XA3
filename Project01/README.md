@@ -4,6 +4,7 @@
     Execute this script from the Project01 folder with:
         chmod +x project_analyze.sh
         ./project_analyze.sh
+    Note: This script is intended to run from the CS1XA3/Project01 directory, though it should still work as long as you are running it from within the CS1XA3 repo.
     Once the script runs, you will be prompted to input the feature you want to use.
     Simply enter in the name of the feature (listed in each feature's section below) you wish to run, then press enter.
 
@@ -13,13 +14,13 @@
     **Execution**: Input "checkout_latest_merge" (without the quotes) when prompted.
 
 ## Feature FIXME Log
-    **Description**: This feature will search for files that contain "#FIXME" (case-sensitive) in their last line, and output their name (including the path to that file)
+    **Description**: This feature will search for files within the CS1XA3 repo that contain "#FIXME" (case-sensitive) in their last line, and output their name (including the path to that file)
         to "Project01/fixme.log". Files in the .git directory are ignored to avoid overlap.
     **Execution**: Input "fixme_log" (without the quotes) when prompted.
 	**Reference**: Finding of fileList modified from https://unix.stackexchange.com/a/350090
 
 ## Feature File Type Count
-    **Description**: This feature will prompt the user for a file extension (e.g. "txt", "py", "log", etc.) and output the number of files in the repo
+    **Description**: This feature will prompt the user for a file extension (e.g. "txt", "py", "log", etc.) and output the number of files in the CS1XA3 repo
         of that file extension. If no extension is entered, the total number of files in the repo, including those in hidden directories (such as .git), will be output instead.
     **Execution**: Input "file_type_count" (without the quotes) when prompted, press Enter, then input the file extension you wish to search for, if any.
 
