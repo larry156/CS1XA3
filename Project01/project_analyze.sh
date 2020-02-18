@@ -50,6 +50,65 @@ file_type_count() {
 	fi
 }
 
+
+switch_to_executable() {
+	# Prompt the user on whether they want to change or restore permissions
+	echo "Would you like to Change or Restore permissions?"
+	userChoice=""
+	while [ "${userChoice,,}" != "change" ] && [ "${userChoice,,}" != "restore" ] ; do # From https://stackoverflow.com/a/27679748
+		echo "Enter your choice: "
+		read userChoice
+		if [ "${userChoice,,}" != "change" ] && [ "${userChoice,,}" != "restore" ] ; then
+			echo "Invalid input."
+		fi
+	done
+	# User wants to change permissions
+	if [[ "${userChoice,,}" == "change" ]] ; then
+		# Create log, overwriting if necessary
+		if [ -f "permissions.log" ] ; then
+			rm "permissions.log"
+		fi
+		touch "permissions.log"
+		# Find .sh files
+		scriptList=$(find "$repoRoot" -type f -name "project_analyze.sh" -prune -o -type f -name "*.sh" -print) # Exclude project_analyze.sh from being modified
+		# Save original permissions and change to executable
+		IFS=$'\n'
+		for file in $scriptList ; do
+			#echo "$file"
+			perms=$(ls -l "$file" | cut -d " " -f1 )
+			permsNum=$(stat -c '%a' "$file")
+			echo "$permsNum \"$file\"" >> "permissions.log"
+			for (( i=2; i < ${#perms}; i+=3 )) ; do
+				curChar=${perms:$i:1}
+				#echo $curChar
+				# Add x permissions
+				if [ "$curChar" == "w" ] ; then 
+					if [ $i -eq 2 ] ; then
+						chmod u+x "$file"
+					elif [ $i -eq 5 ] ; then
+						chmod g+x "$file"
+					else
+						chmod o+x "$file"
+					fi
+				# Remove x permissions
+				else
+					if [ $i -eq 2 ] ; then
+						chmod u-x "$file"
+					elif [ $i -eq 5 ] ; then
+						chmod g-x "$file"
+					else
+						chmod o-x "$file"
+					fi
+				fi
+			done
+		done
+		unset IFS
+	elif [ "${userChoice,,}" = "restore" ] ; then
+		# do different stuff
+		echo "meh"
+	fi
+}
+
 echo "Enter name of feature to run:"
 read featName
 echo "Running $featName..."
