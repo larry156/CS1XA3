@@ -107,7 +107,8 @@ switch_to_executable() {
 		# Do a chmod on each line of permissions.log
 		cat "permissions.log" | read permList
 		for file in $permList ; do
-			chmod $file
+			echo $file
+			chmod "$file"
 		done
 	fi
 }
