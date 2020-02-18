@@ -104,8 +104,11 @@ switch_to_executable() {
 		done
 		unset IFS
 	elif [ "${userChoice,,}" = "restore" ] ; then
-		# do different stuff
-		echo "meh"
+		# Do a chmod on each line of permissions.log
+		cat "permissions.log" | read permList
+		for file in $permList ; do
+			chmod $file
+		done
 	fi
 }
 
