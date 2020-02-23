@@ -103,13 +103,70 @@ switch_to_executable() {
 			done
 		done
 		unset IFS
-	elif [ "${userChoice,,}" = "restore" ] ; then
+	elif [ "${userChoice,,}" = "restore" ] ; then 
 		# Do a chmod on each line of permissions.log
 		cat "permissions.log" | read permList
 		for file in $permList ; do
 			echo $file
 			chmod "$file"
 		done
+	fi
+}
+
+backup_restore() {
+	# Prompt the user on whether they want to backup & delete, or restore files
+	echo "Would you like to Backup or Restore temporary files?"
+	userChoice=""
+	while [ "${userChoice,,}" != "backup" ] && [ "${userChoice,,}" != "restore" ] ; do 
+		echo "Enter your choice: "
+		read userChoice
+		if [ "${userChoice,,}" != "backup" ] && [ "${userChoice,,}" != "restore" ] ; then
+			echo "Invalid input."
+		fi
+	done
+	# User wants to backup files
+	if [ "${userChoice,,}" == "backup" ] ; then
+		# Empty and create the backup folder and log file
+		if [ -d "backup" ] ; then 
+			rm -r "backup"
+		fi
+		mkdir "backup"
+		touch "backup/restore.log"
+
+		# Find .tmp files and move them to the backup folder
+		tempFilesList=$(find "$repoRoot" -type f -name "*.tmp")
+		count=1
+		IFS=$'\n'
+		for file in $tempFilesList ; do
+			#echo "$file"
+			echo "$file" >> "backup/restore.log"
+			# Files will be named as numbers to account for the possibility of files with the same name in different locations.
+			cp "$file" "./backup/$count.tmp"
+			rm "$file"
+			count=$(( $count + 1 ))
+		done
+		unset IFS
+		numFiles=$(cat "./backup/restore.log" | wc -l)
+		echo "Backed up $numFiles files."
+	elif [ "${userChoice,,}" = "restore" ] ; then 
+		if [ ! -f "./backup/restore.log" ] ; then
+			echo "Error: restore.log not found" 1>&2
+			exit 1
+		fi
+		origPathList=$(cat "./backup/restore.log")
+		tempFilesList=$(find "./backup" -type f -name "*.tmp")
+		count=1
+		IFS=$'\n'
+		for file in $tempFilesList ; do
+			#echo "$file"
+			origPath=$(echo "$origPathList" | cut -d $'\n' -f "$count")
+			count=$(( $count + 1 ))
+			mv "$file" "$origPath"
+			#echo "$origPath"
+		done
+		unset IFS
+		numFiles=$(cat "./backup/restore.log" | wc -l)
+		echo "Restored $numFiles files to their original location."
 	fi
 }
 
