@@ -103,13 +103,21 @@ switch_to_executable() {
 			done
 		done
 		unset IFS
-	elif [ "${userChoice,,}" = "restore" ] ; then 
+		echo "Changed permissions."
+	elif [ "${userChoice,,}" == "restore" ] ; then
 		# Do a chmod on each line of permissions.log
-		cat "permissions.log" | read permList
+		permList=$(cat "permissions.log")
+		IFS=$'\n'
 		for file in $permList ; do
-			echo $file
-			chmod "$file"
+			#echo "$file"
+			perm=$(echo "$file" | cut -d " " -f1 )
+			permsPath=$(echo "$file" | cut -d " " -f2 )
+			permsPath=$(echo "${permsPath//\"}")
+			#echo $perm "$permsPath"
+			chmod $perm "$permsPath"
 		done
+		unset IFS
+		echo "Restored permissions."
 	fi
 }
 
