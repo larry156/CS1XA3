@@ -23,7 +23,9 @@ to "Project01/fixme.log". Files in the .git directory are ignored to avoid overl
 
 **Execution**: Input "fixme_log" (without the quotes) when prompted.
 
-**Reference**: Finding of fileList modified from https://unix.stackexchange.com/a/350090
+**Reference**: 
+
+1. Finding of fileList modified from https://unix.stackexchange.com/a/350090
 
 ## Feature File Type Count
 **Description**: This feature will prompt the user for a file extension (e.g. "txt", "py", "log", etc.) and output the number of files in the CS1XA3 repo
@@ -31,12 +33,48 @@ of that file extension. If no extension is entered, the total number of files in
 
 **Execution**: Input "file_type_count" (without the quotes) when prompted, press Enter, then input the file extension you wish to search for, if any.
 
+## Feature Switch to Executable
+**Description**: This feature will allow the user to add execute permissions to .sh files for users that already have write permissions, as well as allowing the user
+to restore the original permissions of .sh files. When running this feature, the user is prompted on whether they want to "Change" or "Restore" permissions. If the user
+selects "Change", the program will find all files with the ".sh" extension and allow users that have write permission to also execute the files. The files' original
+permissions are then stored in "Project01/permissions.log" in octal format, along with a path to the file. If the user selects "Restore", the program will then restore
+the original permissions of all files found in permissions.log. Please note that the permissions of "project_analyze.sh" will *not* be altered by this feature.
+Additionally, please ensure that no file paths contain the ";" character, as this is used as a delimiter for permissions.log.
+
+**Execution**: Input "switch_to_executable" (without the quotes) when prompted, then type either "change" or "restore" (case-insensitive) and press Enter.
+
+**Reference**: 
+
+1. Change string to lowercase from https://stackoverflow.com/a/27679748. 
+2. Substring removal from https://linuxhint.com/bash_string_manipulation/
+
+## Backup and Delete / Restore
+**Description**: This feature will allow the user to back up temporary (".tmp") files found in the repo to "Project01/backup". Users may also restore these files
+to their original location using this feature. When running this feature, the user is prompted on whether they want to "Backup" or "Restore" files. 
+
+If the user chooses "Backup", the program will move all files with the ".tmp" extension to a backup folder in the Project01 directory. The files are renamed sequentially to account for the
+possibility of duplicate file names. Additionally, a file called "restore.log" is created in the backups folder to keep track of each file's original path. Please do not tamper with this file or the backups folder.
+
+If the user chooses "Restore", the program will restore the files in the backups folder to their original location using "restore.log". If this file doesn't exist, the program will throw an error and exit.
+
+**Execution**: Input "backup_restore" (without the quotes) when prompted, then type either "backup" or "restore" (case-insensitive) and press Enter.
+
+**Reference**: 
+1. Change string to lowercase from https://stackoverflow.com/a/27679748. 
+
 ## Custom Feature HTML Template
 **Description**: This feature will generate an html file from a template called "template.html" in the Project01 folder. If this file does not exist,
 it will throw an error prompting the user to create one, and exit. If it does exist, the user will be prompted to enter the name of the new file, and a path to where
 the new file should be. Once created, the script will replace any instances of the string "%NAME%" with the name of the file, in title case (e.g. "Abcd")
 
+Note: Special characters in custom names may not appear properly in the file explorer. Additionally, you may want to leave file extensions out of your custom name.
+If the custom path is invalid, the new HTML file will be placed in the Project01 folder. This feature *will* overwrite files that already exist, so be warned.
+
 **Execution**: Input "html_template" (without the quotes) when prompted, then input a name for the new file, then input a path to where the file will be placed.
+
+**Reference**:
+
+1. String manupulation from https://linuxhint.com/bash_string_manipulation/
 
 ## Custom Feature Censor File
 **Description**: This feature will check if there is a file named "forbidden-text.txt" in the Project01 folder of the repo. If this file doesn't exist, the 

@@ -55,7 +55,7 @@ switch_to_executable() {
 	# Prompt the user on whether they want to change or restore permissions
 	echo "Would you like to Change or Restore permissions?"
 	userChoice=""
-	while [ "${userChoice,,}" != "change" ] && [ "${userChoice,,}" != "restore" ] ; do # From https://stackoverflow.com/a/27679748
+	while [ "${userChoice,,}" != "change" ] && [ "${userChoice,,}" != "restore" ] ; do # Case insensitive
 		echo "Enter your choice: "
 		read userChoice
 		if [ "${userChoice,,}" != "change" ] && [ "${userChoice,,}" != "restore" ] ; then
@@ -77,7 +77,7 @@ switch_to_executable() {
 			#echo "$file"
 			perms=$(ls -l "$file" | cut -d " " -f1 )
 			permsNum=$(stat -c '%a' "$file")
-			echo "$permsNum \"$file\"" >> "permissions.log"
+			echo "$permsNum;\"$file\"" >> "permissions.log"
 			for (( i=2; i < ${#perms}; i+=3 )) ; do
 				curChar=${perms:$i:1}
 				#echo $curChar
@@ -105,14 +105,19 @@ switch_to_executable() {
 		unset IFS
 		echo "Changed permissions."
 	elif [ "${userChoice,,}" == "restore" ] ; then
+		# Check if permissions.log exists
+		if [ ! -f "./permissions.log" ] ; then
+			echo "Error: permissions.log not found" 1>&2
+			exit 1
+		fi
 		# Do a chmod on each line of permissions.log
 		permList=$(cat "permissions.log")
 		IFS=$'\n'
 		for file in $permList ; do
 			#echo "$file"
-			perm=$(echo "$file" | cut -d " " -f1 )
-			permsPath=$(echo "$file" | cut -d " " -f2 )
-			permsPath=$(echo "${permsPath//\"}")
+			perm=$(echo "$file" | cut -d ";" -f1 )
+			permsPath=$(echo "$file" | cut -d ";" -f2 )
+			permsPath=$(echo "${permsPath//\"}") # Remove quotation marks from path
 			#echo $perm "$permsPath"
 			chmod $perm "$permsPath"
 		done
@@ -132,6 +137,7 @@ backup_restore() {
 			echo "Invalid input."
 		fi
 	done
+	
 	# User wants to backup files
 	if [ "${userChoice,,}" == "backup" ] ; then
 		# Empty and create the backup folder and log file
@@ -156,6 +162,8 @@ backup_restore() {
 		unset IFS
 		numFiles=$(cat "./backup/restore.log" | wc -l)
 		echo "Backed up $numFiles files."
+
+	# User wants to restore files
 	elif [ "${userChoice,,}" = "restore" ] ; then 
 		if [ ! -f "./backup/restore.log" ] ; then
 			echo "Error: restore.log not found" 1>&2
@@ -176,6 +184,50 @@ backup_restore() {
 		numFiles=$(cat "./backup/restore.log" | wc -l)
 		echo "Restored $numFiles files to their original location."
 	fi
+}
+
+html_template() {
+	# Make sure template.html exists
+	if [ ! -f "./template.html" ] ; then
+		echo "Error: template.html not found. Please create it." 1>&2
+		exit 1
+	fi
+
+	# Read in variables
+	echo "Enter name of new file:"
+	read fileName
+	if [ "$fileName" == "" ] ; then # If the user doesn't enter a name then just call it "index".
+		fileName="index"
+	fi
+	# Replace all "/" characters with spaces in case the user actively tries to break the program that way
+	fileName=${fileName//\//\ }
+	echo "Enter path to destination directory:"
+	read destPath
+	# If the user doesn't enter a path or the path doesn't exist, then assume that they want it in the Project01 folder.
+	if [ "$destPath" == "" ] || [ ! -d "$destPath" ] ; then 
+		if [ ! -d "$destPath" ] && [ "$destPath" != "" ] ; then
+			echo "Warning: \"$destPath\" does not exist. Your file will be located in the Project01 folder."
+		fi
+		destPath="."
+	fi
+
+	fullPath="$destPath/$fileName.html"
+	tempContents=$(cat "./template.html")
+	# Capitalize the first letter in each word of the filename
+	nameTitleCase="☺"
+	for word in $fileName ; do
+		if [ "$nameTitleCase" == "☺" ] ; then
+			nameTitleCase="${word^}"
+		else
+			nameTitleCase="$nameTitleCase ${word^}"
+		fi
+	done
+	tempContents="${tempContents//\%NAME\%/$nameTitleCase}" # Replace %NAME% with the file name
+	if [ -f "$fullPath" ] ; then
+		echo "Warning: \"$fullPath\" already exists and will be overwritten."
+	fi
+	echo "$tempContents" > "$fullPath"
+	echo "Created \"$fullPath\"."
 }
 
 echo "Enter name of feature to run:"
