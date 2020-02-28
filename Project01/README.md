@@ -83,4 +83,13 @@ for a string. If the user does not enter a custom string, the script will replac
 with "\[REDACTED]". Otherwise, it will just replace any forbidden text with the user's custom string, enclosed in square brackets. 
 If a file named "censor_exclude.txt" exists, the script will throw an error if the path the user enters matches any line in this file (i.e. the script will not modify any files listed within).
 
+Note: Please use relative paths without "./" if the file you wish to censor is in Project01 or a subdirectory, and use absolute paths for files elsewhere.
+Additionally, you may want to leave punctuation out of "forbidden-text.txt". Please do not include slashes of any kind in "forbidden-text.txt" or your custom string.
+Separate words in "forbidden-text.txt" using lines, not spaces (i.e. each line is treated as a word).
+
 **Execution**: Input "censor_file" (without the quotes) when prompted, then input a path to a file, and any string, as prompted.
+
+**Reference**:
+
+1. String manupulation from https://linuxhint.com/bash_string_manipulation/
+2. Case-insensitive sed matching from https://www.cyberciti.biz/faq/unixlinux-sed-case-insensitive-search-replace-matching/

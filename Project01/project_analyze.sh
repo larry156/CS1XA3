@@ -196,7 +196,7 @@ html_template() {
 	# Read in variables
 	echo "Enter name of new file:"
 	read fileName
-	if [ "$fileName" == "" ] ; then # If the user doesn't enter a name then just call it "index".
+	if [ -z "$fileName" ] ; then # If the user doesn't enter a name then just call it "index".
 		fileName="index"
 	fi
 	# Replace all "/" characters with spaces in case the user actively tries to break the program that way
@@ -228,6 +228,53 @@ html_template() {
 	fi
 	echo "$tempContents" > "$fullPath"
 	echo "Created \"$fullPath\"."
+}
+
+censor_file() {
+	# Check if forbidden-text.txt exists
+	if [ ! -f "forbidden-text.txt" ] ; then
+		echo "Error: \"forbidden-text.txt\" does not exist. Please create the file and place it in the Project01 folder." 1>&2
+		exit 1
+	fi
+	wordList=$(cat "forbidden-text.txt")
+
+	echo "Enter path to text file: "
+	read censorPath
+	if [ -f "censor-exclude.txt" ] ; then
+		toExclude=$(cat "censor-exclude.txt")
+		IFS=$'\n'
+		for file in $toExclude ; do
+			if [ "$file" == "$censorPath" ] ; then
+				echo "Error: The file you entered is in the exclusion list." 1>&2
+				echo "If you wish to censor this file, remove it from Project01/censor-exclude.txt"
+				exit 1
+			fi
+		done
+		unset IFS
+	fi
+	if [ ! -f "$censorPath" ] ; then
+		echo "Error: File does not exist." 1>&2
+	fi
+	echo "Enter censor text (Leave blank for \"[REDACTED]\"): "
+	read censorString
+	if [ -z "$censorString" ] ; then
+		censorString="[REDACTED]"
+	else
+		censorString="[$censorString]"
+		censorString="${censorString//\/}"
+		censorString="${censorString//\\}" # Clear all slashes since that might break sed
+	fi
+	fileContents=$(cat $censorPath)
+
+	# Since words are, by their nature, a single word long, the IFS shouldn't need to be changed.
+	for word in "$wordList" ; do
+		word="${word//\/}" # I don't know why the word list might have a / character in it but it doesn't hurt to make sure.
+		word="${word//\\}"
+		echo "$wordList - $word"
+		fileContents=$(echo "$fileContents" | sed -e "s/$word/$censorString/gI")
+		echo "$fileContents" | sed -e "s/$word/$censorString/gI"
+	done
+	echo "$fileContents" > "$censorPath"
 }
 
 echo "Enter name of feature to run:"
