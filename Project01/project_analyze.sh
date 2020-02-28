@@ -252,6 +252,11 @@ censor_file() {
 		done
 		unset IFS
 	fi
+	# Don't try to censor this file.
+	if [[ "$censorPath" == *"project_analyze.sh" ]] ; then
+		echo "Error: You cannot censor that file." 1>&2
+		exit 1
+	fi
 	if [ ! -f "$censorPath" ] ; then
 		echo "Error: File does not exist." 1>&2
 	fi
@@ -261,20 +266,25 @@ censor_file() {
 		censorString="[REDACTED]"
 	else
 		censorString="[$censorString]"
-		censorString="${censorString//\/}"
-		censorString="${censorString//\\}" # Clear all slashes since that might break sed
 	fi
 	fileContents=$(cat $censorPath)
+	fileContents="${fileContents,,}"
+	echo "Forbidden words will be replaced with $censorString."
 
 	# Since words are, by their nature, a single word long, the IFS shouldn't need to be changed.
-	for word in "$wordList" ; do
-		word="${word//\/}" # I don't know why the word list might have a / character in it but it doesn't hurt to make sure.
-		word="${word//\\}"
-		echo "$wordList - $word"
-		fileContents=$(echo "$fileContents" | sed -e "s/$word/$censorString/gI")
-		echo "$fileContents" | sed -e "s/$word/$censorString/gI"
+	IFS=$'\n'
+	for word in $wordList ; do
+		word=$(echo "$word" | xargs) # https://stackoverflow.com/a/12973694
+		word="${word,,}"
+		#echo "$word"
+		echo '${fileContents//'"$word"'/'"$censorString"'}'
+		fileContents="${fileContents//$word/$censorString}"
+		#echo "$fileContents"
 	done
+	unset IFS
+	fileContents="${fileContents^^}"
 	echo "$fileContents" > "$censorPath"
+	echo "Removed subversive elements from \"$censorPath\"."
 }
 
 echo "Enter name of feature to run:"
