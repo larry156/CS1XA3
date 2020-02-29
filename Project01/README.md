@@ -38,10 +38,14 @@ of that file extension. If no extension is entered, the total number of files in
 
 ## Feature Switch to Executable
 **Description**: This feature will allow the user to add execute permissions to .sh files for users that already have write permissions, as well as allowing the user
-to restore the original permissions of .sh files. When running this feature, the user is prompted on whether they want to "Change" or "Restore" permissions. If the user
-selects "Change", the program will find all files with the ".sh" extension and allow users that have write permission to also execute the files. The files' original
-permissions are then stored in "Project01/permissions.log" in octal format, along with a path to the file. If the user selects "Restore", the program will then restore
-the original permissions of all files found in permissions.log. Please note that the permissions of "project_analyze.sh" will *not* be altered by this feature.
+to restore the original permissions of .sh files. When running this feature, the user is prompted on whether they want to "Change" or "Restore" permissions. 
+
+If the user selects "Change", the program will find all files with the ".sh" extension and allow users that have write permission to also execute the files. The files' original
+permissions are then stored in "Project01/permissions.log" in octal format, along with a path to the file. 
+
+If the user selects "Restore", the program will then restore the original permissions of all files found in permissions.log.
+
+Please note that the permissions of "project_analyze.sh" will *not* be altered by this feature.
 Additionally, please ensure that no file paths contain the ";" character, as this is used as a delimiter for permissions.log.
 
 **Execution**: Input "switch_to_executable" (without the quotes) when prompted, then type either "change" or "restore" (case-insensitive) and press Enter.
