@@ -4,4 +4,3 @@ are
 forbidden
 down with big brother
 monads are just monoids in the category of endofunctors
-<html>

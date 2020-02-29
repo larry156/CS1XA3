@@ -50,7 +50,7 @@ file_type_count() {
 	fi
 }
 
-
+# Give or take away execute permissions for shell scripts.
 switch_to_executable() {
 	# Prompt the user on whether they want to change or restore permissions
 	echo "Would you like to Change or Restore permissions?"
@@ -126,6 +126,7 @@ switch_to_executable() {
 	fi
 }
 
+# Backup or restore temp files
 backup_restore() {
 	# Prompt the user on whether they want to backup & delete, or restore files
 	echo "Would you like to Backup or Restore temporary files?"
@@ -186,6 +187,7 @@ backup_restore() {
 	fi
 }
 
+# Create an HTML file from a template
 html_template() {
 	# Make sure template.html exists
 	if [ ! -f "./template.html" ] ; then
@@ -199,8 +201,9 @@ html_template() {
 	if [ -z "$fileName" ] ; then # If the user doesn't enter a name then just call it "index".
 		fileName="index"
 	fi
-	# Replace all "/" characters with spaces in case the user actively tries to break the program that way
+	# Replace all "/" and "\" characters with spaces in case the user actively tries to break the program that way
 	fileName=${fileName//\//\ }
+	fileName=${fileName//\\/\ }
 	echo "Enter path to destination directory:"
 	read destPath
 	# If the user doesn't enter a path or the path doesn't exist, then assume that they want it in the Project01 folder.
@@ -209,8 +212,10 @@ html_template() {
 			echo "Warning: \"$destPath\" does not exist. Your file will be located in the Project01 folder."
 		fi
 		destPath="."
+		# echo "$destPath"
 	fi
 
+	# echo "$destPath"
 	fullPath="$destPath/$fileName.html"
 	tempContents=$(cat "./template.html")
 	# Capitalize the first letter in each word of the filename
@@ -230,6 +235,7 @@ html_template() {
 	echo "Created \"$fullPath\"."
 }
 
+# Censor various phrases in a file.
 censor_file() {
 	# Check if forbidden-text.txt exists
 	if [ ! -f "forbidden-text.txt" ] ; then
@@ -244,7 +250,7 @@ censor_file() {
 		toExclude=$(cat "censor-exclude.txt")
 		IFS=$'\n'
 		for file in $toExclude ; do
-			if [ "$file" == "$censorPath" ] ; then
+			if [ "${file,,}" == "${censorPath,,}" ] ; then
 				echo "Error: The file you entered is in the exclusion list." 1>&2
 				echo "If you wish to censor this file, remove it from Project01/censor-exclude.txt"
 				exit 1
@@ -253,12 +259,13 @@ censor_file() {
 		unset IFS
 	fi
 	# Don't try to censor this file.
-	if [[ "$censorPath" == *"project_analyze.sh" ]] ; then
+	if [[ "${censorPath,,}" == *"project_analyze.sh" ]] ; then
 		echo "Error: You cannot censor that file." 1>&2
 		exit 1
 	fi
 	if [ ! -f "$censorPath" ] ; then
 		echo "Error: File does not exist." 1>&2
+		exit 1
 	fi
 	echo "Enter censor text (Leave blank for \"[REDACTED]\"): "
 	read censorString
@@ -271,13 +278,13 @@ censor_file() {
 	fileContents="${fileContents,,}"
 	echo "Forbidden words will be replaced with $censorString."
 
-	# Since words are, by their nature, a single word long, the IFS shouldn't need to be changed.
+	# Loop through each forbidden phrase and replace it with censorString.
 	IFS=$'\n'
 	for word in $wordList ; do
-		word=$(echo "$word" | xargs) # https://stackoverflow.com/a/12973694
+		word=$(echo "$word" | xargs) # Piping echo into xargs removes leading and trailing whitespace.
 		word="${word,,}"
 		#echo "$word"
-		echo '${fileContents//'"$word"'/'"$censorString"'}'
+		#echo '${fileContents//'"$word"'/'"$censorString"'}'
 		fileContents="${fileContents//$word/$censorString}"
 		#echo "$fileContents"
 	done

@@ -10,10 +10,13 @@ Note: This script is intended to run from the CS1XA3/Project01 directory, though
 
 Once the script runs, you will be prompted to input the feature you want to use.
 Simply enter in the name of the feature (listed in each feature's section below) you wish to run, then press enter.
+If you enter a feature that doesn't exist, the program will not work. Feature names are case-sensitive.
 
 ## Feature Checkout Latest Merge
 **Description**: This feature will locate the latest commit with the word "merge" in its commit message, 
 and then automatically checkout that commit. Note: This will put you in a detached HEAD state, and is case-insensitive.
+
+Note: This feature will not work if you have local changes that would be overwritten by checking out another commit. If this is the case, do a `git stash` before using this feature.
 
 **Execution**: Input "checkout_latest_merge" (without the quotes) when prompted.
 
@@ -53,7 +56,10 @@ Additionally, please ensure that no file paths contain the ";" character, as thi
 to their original location using this feature. When running this feature, the user is prompted on whether they want to "Backup" or "Restore" files. 
 
 If the user chooses "Backup", the program will move all files with the ".tmp" extension to a backup folder in the Project01 directory. The files are renamed sequentially to account for the
-possibility of duplicate file names. Additionally, a file called "restore.log" is created in the backups folder to keep track of each file's original path. Please do not tamper with this file or the backups folder.
+possibility of duplicate file names. Additionally, a file called "restore.log" is created in the backups folder to keep track of each file's original path. Please do not tamper with this file or the backups folder,
+or the feature may not work correctly.
+
+Note: If you run "Backup" while there are files already in the backup folder, those files **will be deleted**.
 
 If the user chooses "Restore", the program will restore the files in the backups folder to their original location using "restore.log". If this file doesn't exist, the program will throw an error and exit.
 
@@ -92,4 +98,4 @@ Separate words in "forbidden-text.txt" using lines, not spaces (i.e. each line i
 **Reference**:
 
 1. String manupulation from https://linuxhint.com/bash_string_manipulation/
-2. Case-insensitive sed matching from https://www.cyberciti.biz/faq/unixlinux-sed-case-insensitive-search-replace-matching/
+2. Use of xargs to remove whitespace taken from https://stackoverflow.com/a/12973694
