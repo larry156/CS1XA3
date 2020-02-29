@@ -92,6 +92,8 @@ If a file named "censor_exclude.txt" exists, the script will throw an error if t
 Note: Please use relative paths without "./" if the file you wish to censor is in Project01 or a subdirectory, and use absolute paths for files elsewhere.
 Additionally, you may want to leave punctuation out of "forbidden-text.txt". Please do not include slashes of any kind in "forbidden-text.txt" or your custom string.
 Separate words in "forbidden-text.txt" using lines, not spaces (i.e. each line is treated as a word).
+You *are* allowed to censor "censor-exclude.txt" and "forbidden-text.txt", but you cannot censor any file
+named "project_analyze.sh".
 
 **Execution**: Input "censor_file" (without the quotes) when prompted, then input a path to a file, and any string, as prompted.
 
