@@ -24,6 +24,12 @@ $(document).ready(function () {
                 return "Collapse";
             });
         }
+
+        // Collapsing things is going to change the position of some sections, so update the y values accordingly
+        yPosSkills = $("#section-skills").offset().top - highlightOffsetVal;
+        yPosProjects = $("#section-projects").offset().top - highlightOffsetVal;
+        yPosEducation = $("#section-education").offset().top - highlightOffsetVal;
+        yPosExperience = $("#section-experience").offset().top - highlightOffsetVal;
         //console.log($(this).parent().find(".hide-click:visible"))
         //console.log($(this).parent().find(".hide-click:hidden"))
     }
