@@ -2,7 +2,7 @@ $(document).ready(function () {
     // y-offset of the navbar
     var yOffset = $("#navBar").offset().top;
     // y-positions of sections relative to the document
-    var highlightOffsetVal = 128;
+    var highlightOffsetVal = 96;
     var yPosSkills = $("#section-skills").offset().top - highlightOffsetVal;
     var yPosProjects = $("#section-projects").offset().top - highlightOffsetVal;
     var yPosEducation = $("#section-education").offset().top - highlightOffsetVal;
