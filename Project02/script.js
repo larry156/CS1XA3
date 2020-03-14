@@ -47,34 +47,74 @@ $(document).ready(function () {
     // Highlight buttons on navbar based on user's position in the document
     function navHighlight() {
         // Reset theme colours for all navbar items
-        $(".w3-bar-item").removeClass("w3-theme-l1");
         $(".w3-bar-item").removeClass("w3-theme");
-        $(".w3-bar-item").addClass("w3-theme");
+        $(".w3-bar-item").removeClass("w3-theme-d3");
+        $(".w3-bar-item").addClass("w3-theme-d3");
 
         // Change colours based on scroll position in document
         if ($(window).scrollTop() < yPosSkills) {
-            $("#btn-home").addClass("w3-theme-l1");
-            $("#btn-home").removeClass("w3-theme");
+            $("#btn-home").addClass("w3-theme");
+            $("#btn-home").removeClass("w3-theme-d3");
         }
         else if ($(window).scrollTop() < yPosProjects) {
-            $("#btn-skills").addClass("w3-theme-l1");
-            $("#btn-skills").removeClass("w3-theme");
+            $("#btn-skills").addClass("w3-theme");
+            $("#btn-skills").removeClass("w3-theme-d3");
         }
         else if ($(window).scrollTop() < yPosEducation) {
-            $("#btn-projects").addClass("w3-theme-l1");
-            $("#btn-projects").removeClass("w3-theme");
+            $("#btn-projects").addClass("w3-theme");
+            $("#btn-projects").removeClass("w3-theme-d3");
         }
         else if ($(window).scrollTop() < yPosExperience) {
-            $("#btn-education").addClass("w3-theme-l1");
-            $("#btn-education").removeClass("w3-theme");
+            $("#btn-education").addClass("w3-theme");
+            $("#btn-education").removeClass("w3-theme-d3");
         }
         else {
-            lastSectionBtn.addClass("w3-theme-l1");
-            lastSectionBtn.removeClass("w3-theme");
+            lastSectionBtn.addClass("w3-theme");
+            lastSectionBtn.removeClass("w3-theme-d3");
         }
     }
 
+    // Dynamically resize the images of project cards to fit in with the text.
+    function resizeImage() {
+        var maxWidth = "500px";
+        // Get dimensions of the text container
+        var textHeight = $(".project-collapser").parent().find(".w3-justify").height(); // The text container is the only element in this context with the w3-justify class
+        //var textWidth = $(".project-collapser").parent().find(".w3-justify").css("width");
+        
+        var img = $(".project-collapser").parent().find(".w3-image");
+        var imgContainer = img.parent();
+        // Make sure there's enough space so that the image doesn't get squished by resizing
+        if (textHeight < imgContainer.width()) {
+            img.css("height", textHeight);
+            img.css("width", "auto");
+        }
+        else {
+            img.css("max-width", "100%");
+            img.css("height", "auto");
+        }
+        /* else if (img.css("width") < textHeight ) {
+            if (textHeight < maxWidth)
+            {
+                img.css("width", textWidth);
+            }
+            else {
+                img.css("width", maxWidth);
+            }
+            img.css("height", "auto");
+        } */
+        console.log(textHeight);
+        console.log(imgContainer.width());
+        //console.log(img.css("max-width"));
+    }
+
     $(".view-toggle").click(toggleCollapser);
+    $(".project-collapser").click(resizeImage);
+    $(".project-collapser").ready(resizeImage);
     $(window).scroll(stickyNav);
     $(window).scroll(navHighlight);
+    $(window).resize(resizeImage);
+
+    // If the user refreshes the page, the navbar won't update until they scroll. This avoids that issue.
+    stickyNav();
+    navHighlight();
 });

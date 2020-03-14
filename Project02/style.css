@@ -259,6 +259,7 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 .navbar-sticky {
     position : fixed;
     top : 0px;
+    z-index: 1; /* For some reason text with the "w3-opacity" class kept showing through the navbar. This stops that from happening */
 }
 .link-anchor {
     position: relative;
