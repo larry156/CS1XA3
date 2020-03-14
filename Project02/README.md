@@ -8,7 +8,7 @@ This webpage is Larry Yao's custom CV.
 
 **Description**: I made the following design choices ...
 
-## Custom Javascript Code -- Collapsable Sections
+## Custom Javascript Code -- Collapsible Sections
 
 **Description**: This feature allows the user to show or hide different sections of the CV, allowing me to describe
 different aspects in detail without making the webpage too cluttered. If an HTML element with the "view-toggle" class
@@ -20,7 +20,7 @@ Otherwise, it displays them if they are hidden.
 
 **Description**: This feature makes the webpage's navigation bar "stick" to the top of the window when the user scrolls past it,
 allowing them to easily navigate to different sections of the page. The script will also highlight the section that the user is currently
-browsing on the navigation bar.
+browsing on the navigation bar. The navigation bar also includes a button that collapses or expands all collapsible sections.
 
 **Reference**: stickyNav() code was modified from [this w3schools tutorial](https://www.w3schools.com/howto/howto_js_navbar_sticky.asp) to use jQuery instead.
 

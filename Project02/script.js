@@ -24,6 +24,8 @@ $(document).ready(function () {
                 return "Collapse";
             });
         }
+        $(this).toggleClass("collapser-visible");
+        $(this).toggleClass("collapser-hidden");
 
         // Collapsing things is going to change the position of some sections, so update the y values accordingly
         yPosSkills = $("#section-skills").offset().top - highlightOffsetVal;
@@ -32,6 +34,28 @@ $(document).ready(function () {
         yPosExperience = $("#section-experience").offset().top - highlightOffsetVal;
         //console.log($(this).parent().find(".hide-click:visible"))
         //console.log($(this).parent().find(".hide-click:hidden"))
+    }
+
+    // Collapses or expands all collapsible sections
+    function toggleAllCollapsers() {
+        // If a collapsible section is visible then hide all of them
+        if ($(".view-toggle").hasClass("collapser-visible")) {
+            $(".view-toggle").each(function () {
+                if ($(this).hasClass("collapser-visible")) {
+                    $(this).each(toggleCollapser); // Even though $(this) is only one element, this is the easiest way to call a function on a selector.
+                }
+            });
+        }
+        // Otherwise make them all visible
+        else {
+            $(".view-toggle").each(function () {
+                if ($(this).hasClass("collapser-hidden")) {
+                    $(this).each(toggleCollapser);
+                }
+            });
+            // Resize images
+            resizeAllImages();
+        }
     }
 
     // Sticky navbar
@@ -48,7 +72,7 @@ $(document).ready(function () {
     function navHighlight() {
         // Reset theme colours for all navbar items
         $(".w3-bar-item").removeClass("w3-theme");
-        $(".w3-bar-item").removeClass("w3-theme-d3");
+        //$(".w3-bar-item").removeClass("w3-theme-d3");
         $(".w3-bar-item").addClass("w3-theme-d3");
 
         // Change colours based on scroll position in document
@@ -78,10 +102,10 @@ $(document).ready(function () {
     function resizeImage() {
         var maxWidth = "500px";
         // Get dimensions of the text container
-        var textHeight = $(".project-collapser").parent().find(".w3-justify").height(); // The text container is the only element in this context with the w3-justify class
+        var textHeight = $(this).parent().find(".w3-justify").height(); // The text container is the only element in this context with the w3-justify class
         //var textWidth = $(".project-collapser").parent().find(".w3-justify").css("width");
         
-        var img = $(".project-collapser").parent().find(".w3-image");
+        var img = $(this).parent().find(".w3-image");
         var imgContainer = img.parent();
         // Make sure there's enough space so that the image doesn't get squished by resizing
         if (textHeight < imgContainer.width()) {
@@ -107,14 +131,21 @@ $(document).ready(function () {
         //console.log(img.css("max-width"));
     }
 
+    // This function calls resizeImage() on all project-collapser elements.
+    function resizeAllImages() {
+        $(".project-collapser").each(resizeImage);
+    }
+
     $(".view-toggle").click(toggleCollapser);
+    $("#btn-collapse-all").click(toggleAllCollapsers);
     $(".project-collapser").click(resizeImage);
-    $(".project-collapser").ready(resizeImage);
+    //$(".project-collapser").ready(resizeImage);
     $(window).scroll(stickyNav);
     $(window).scroll(navHighlight);
-    $(window).resize(resizeImage);
+    $(window).resize(resizeAllImages);
 
     // If the user refreshes the page, the navbar won't update until they scroll. This avoids that issue.
     stickyNav();
     navHighlight();
+    resizeAllImages();
 });
