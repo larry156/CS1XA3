@@ -10,6 +10,14 @@ $(document).ready(function () {
     // Last section of the CV
     var lastSectionBtn = $("#btn-experience");
 
+    // Update yPos variables. This should be called by anything that affects the length of the page.
+    function setYPos() {
+        yPosSkills = $("#section-skills").offset().top - highlightOffsetVal;
+        yPosProjects = $("#section-projects").offset().top - highlightOffsetVal;
+        yPosEducation = $("#section-education").offset().top - highlightOffsetVal;
+        yPosExperience = $("#section-experience").offset().top - highlightOffsetVal;
+    }
+
     // Hide elements if visible, otherwise show them.
     function toggleCollapser() {
         if ($(this).parent().find(".hide-click:visible").length > 0) {
@@ -28,10 +36,7 @@ $(document).ready(function () {
         $(this).toggleClass("collapser-hidden");
 
         // Collapsing things is going to change the position of some sections, so update the y values accordingly
-        yPosSkills = $("#section-skills").offset().top - highlightOffsetVal;
-        yPosProjects = $("#section-projects").offset().top - highlightOffsetVal;
-        yPosEducation = $("#section-education").offset().top - highlightOffsetVal;
-        yPosExperience = $("#section-experience").offset().top - highlightOffsetVal;
+        setYPos();
         //console.log($(this).parent().find(".hide-click:visible"))
         //console.log($(this).parent().find(".hide-click:hidden"))
     }
@@ -129,11 +134,15 @@ $(document).ready(function () {
         console.log(textHeight);
         console.log(imgContainer.width());
         //console.log(img.css("max-width"));
+
+        // Adjust yPos to account for image resizing.
+        setYPos();
     }
 
     // This function calls resizeImage() on all project-collapser elements.
     function resizeAllImages() {
         $(".project-collapser").each(resizeImage);
+        
     }
 
     $(".view-toggle").click(toggleCollapser);
@@ -143,6 +152,7 @@ $(document).ready(function () {
     $(window).scroll(stickyNav);
     $(window).scroll(navHighlight);
     $(window).resize(resizeAllImages);
+    $(window).resize(setYPos);
 
     // If the user refreshes the page, the navbar won't update until they scroll. This avoids that issue.
     stickyNav();
