@@ -10,6 +10,8 @@ $(document).ready(function () {
     // Last section of the CV
     var lastSectionBtn = $("#btn-experience");
 
+    var modalVisible = false;
+
     // Update yPos variables. This should be called by anything that affects the length of the page.
     function setYPos() {
         yPosSkills = $("#section-skills").offset().top - highlightOffsetVal;
@@ -108,7 +110,6 @@ $(document).ready(function () {
         var maxWidth = "500px";
         // Get dimensions of the text container
         var textHeight = $(this).parent().find(".w3-justify").height(); // The text container is the only element in this context with the w3-justify class
-        //var textWidth = $(".project-collapser").parent().find(".w3-justify").css("width");
         
         var img = $(this).parent().find(".w3-image");
         var imgContainer = img.parent();
@@ -121,18 +122,8 @@ $(document).ready(function () {
             img.css("max-width", "100%");
             img.css("height", "auto");
         }
-        /* else if (img.css("width") < textHeight ) {
-            if (textHeight < maxWidth)
-            {
-                img.css("width", textWidth);
-            }
-            else {
-                img.css("width", maxWidth);
-            }
-            img.css("height", "auto");
-        } */
-        console.log(textHeight);
-        console.log(imgContainer.width());
+        //console.log(textHeight);
+        //console.log(imgContainer.width());
         //console.log(img.css("max-width"));
 
         // Adjust yPos to account for image resizing.
@@ -142,12 +133,29 @@ $(document).ready(function () {
     // This function calls resizeImage() on all project-collapser elements.
     function resizeAllImages() {
         $(".project-collapser").each(resizeImage);
-        
+    }
+
+    // Toggles the visibility of modals
+    function toggleModal() {
+        //console.log("Trying to toggle modal");
+        // Hide the modal if it's already shown.
+        if (modalVisible == true || !$(this).hasClass("expandable-image")) {
+            $(".w3-modal").hide();
+            modalVisible = false;
+        }
+        // Otherwise show it.
+        else {
+            modalVisible = true;
+            var myID = "#" + $(this).attr("id");
+            $(".w3-modal" + myID).show();
+        }
     }
 
     $(".view-toggle").click(toggleCollapser);
     $("#btn-collapse-all").click(toggleAllCollapsers);
     $(".project-collapser").click(resizeImage);
+    $(".expandable-image").click(toggleModal);
+    $(".w3-modal").click(toggleModal);
     //$(".project-collapser").ready(resizeImage);
     $(window).scroll(stickyNav);
     $(window).scroll(navHighlight);
