@@ -48,3 +48,8 @@ is maintained, so that it doesn't get squished because the page isn't wide enoug
 
 - This page uses W3.CSS from [this template](https://www.w3schools.com/w3css/tryw3css_templates_teal.htm).
 - HTML for the Image Modals feature was modified from [w3schools](https://www.w3schools.com/w3css/w3css_modal.asp).
+
+Non-breaking space test
+<p>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+</p>
