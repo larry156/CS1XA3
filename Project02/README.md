@@ -32,9 +32,9 @@ browsing on the navigation bar. The navigation bar also includes a button that c
 
 ## Custom Javascript Code -- Dynamic Image Resizing
 
-**Description**: This feature dynamically resizes the images of the three projects that are described in the CV so that the image height matches the height of the text container beside it.
-It runs when the window is resized, as well as when one of the project sections is collapsed or expanded by the user. Checks are also included to make sure the image's aspect ratio
-is maintained, so that it doesn't get squished because the page isn't wide enough to draw the image properly.
+    **Description**: This feature dynamically resizes the images of the three projects that are described in the CV so that the image height matches the height of the text container beside it.
+    It runs when the window is resized, as well as when one of the project sections is collapsed or expanded by the user. Checks are also included to make sure the image's aspect ratio
+    is maintained, so that it doesn't get squished because the page isn't wide enough to draw the image properly.
 
 **Implementation**: Feature is implemented in the `resizeImage()`, and `resizeAllImages()` functions in script.js
 
@@ -48,8 +48,3 @@ is maintained, so that it doesn't get squished because the page isn't wide enoug
 
 - This page uses W3.CSS from [this template](https://www.w3schools.com/w3css/tryw3css_templates_teal.htm).
 - HTML for the Image Modals feature was modified from [w3schools](https://www.w3schools.com/w3css/w3css_modal.asp).
-
-Non-breaking space test
-<p>
-    &nbsp;&nbsp;&nbsp;&nbsp;
-</p>
