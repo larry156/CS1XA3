@@ -1,5 +1,8 @@
 # CS 1XA3 Project02 - yaol13
 
+<!-- Note: I decided against using non-breaking spaces for indentation, because it did not work well with the way GitHub wraps text, and looked very bad. -->
+<!-- See this image https://media.discordapp.net/attachments/666016120293163051/688888790428680230/unknown.png for an example. -->
+
 ## Overview
 
 This webpage is my (Larry Yao) custom CV. It contains information about my skills, past projects & experience, as well as where I've studied.
@@ -7,8 +10,6 @@ This webpage is my (Larry Yao) custom CV. It contains information about my skill
 ## Design
 
 **Description**:
-
-<!-- Test comment -->
 
 For this CV, I tried to design it to have a more simplistic and "professional" appearance. For the CSS, I used the W3CSS template, as well as a teal theme on top of that
 because I thought it looked nice, while not being overly flashy and gimmicky.
