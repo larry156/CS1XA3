@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django import forms
 
 class Interest(models.Model):
     label = models.CharField(max_length=30,primary_key=True)
@@ -37,3 +38,8 @@ class FriendRequest(models.Model):
     from_user = models.ForeignKey(UserInfo,
                                   on_delete=models.CASCADE,
                                   related_name='from_users')
+
+class UserInfoForm(forms.ModelForm):
+    class Meta:
+        model = UserInfo
+        fields = ['employment', 'location', 'birthday']

@@ -47,13 +47,48 @@ def account_view(request):
                         (if handled in this view)
     """
     if request.user.is_authenticated:
-        form = None
-
-        # TODO Objective 3: Create Forms and Handle POST to Update UserInfo / Password
+        pwd_form = PasswordChangeForm(request.user)
+        pwd_invalid = False
+        info_form = models.UserInfoForm()
+        info_invalid = False
 
         user_info = models.UserInfo.objects.get(user=request.user)
+
+        # TODO Objective 3: Create Forms and Handle POST to Update UserInfo / Password
+        if request.method == 'POST':
+            pwd_form = PasswordChangeForm(user=request.user, data=request.POST)
+            info_form = models.UserInfoForm(request.POST)
+
+            # Changing Password
+            if pwd_form.is_valid():
+                print("Changed password")
+                request.user.set_password(pwd_form.cleaned_data.get('new_password1'))
+                request.user.save()
+            else:
+                print(pwd_form.errors)
+                pwd_invalid = True
+
+            # User Info
+            if info_form.is_valid():
+                #print(info_form.cleaned_data.get('interests'))
+                user_info.employment = info_form.cleaned_data.get('employment')
+                user_info.location = info_form.cleaned_data.get('location')
+                user_info.birthday = info_form.cleaned_data.get('birthday')
+                raw_interests = request.POST.get('interests').split(',')
+                #print(raw_interests)
+                for interest in raw_interests:
+                    if interest != '':
+                        user_info.interests.create(label=interest)
+                user_info.save()
+            else:
+                #print(info_form.errors)
+                info_invalid = True
+        
         context = { 'user_info' : user_info,
-                    'form' : form }
+                    'pwd_form' : pwd_form,
+                    'pwd_invalid' : pwd_invalid,
+                    'info_form' : info_form,
+                    'info_invalid' : info_invalid }
         return render(request,'account.djhtml',context)
 
     request.session['failed'] = True

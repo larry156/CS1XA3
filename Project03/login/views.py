@@ -7,7 +7,7 @@ from django.contrib import messages
 from social import models
 
 def login_view(request):
-    """Serves lagin.djhtml from /e/macid/ (url name: login_view)
+    """Serves login.djhtml from /e/macid/ (url name: login_view)
     Parameters
     ----------
       request: (HttpRequest) - POST with username and password or an empty GET
@@ -58,12 +58,29 @@ def signup_view(request):
       request : (HttpRequest) - expected to be an empty get request
     Returns
     -------
-      out : (HttpRepsonse) - renders signup.djhtml
+      out : (HttpRepsonse)
+                   POST - validate, create user account, and redirect to login page
+                   GET - render signup.djhtml with a user creation form form
     """
-    form = None
-
-    # TODO Objective 1: implement signup view
-
-    context = { 'signup_form' : form }
-
+    context = { 'signup_form' : None, 'invalid_form' : False }
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        #print(form)
+        if form.is_valid():
+            print("Creating user")
+            uname = form.cleaned_data.get('username')
+            pword = form.cleaned_data.get('password1')
+            models.UserInfo.objects.create_user_info(username=uname,password=pword)
+            user = authenticate(request, username=uname, password=pword)
+            if user is not None:
+                login(request,user)
+                request.session['failed'] = False
+                return redirect('social:messages_view')
+            else:
+                request.session['failed'] = True
+        else:
+            context['invalid_form'] = True
+    else:
+        form = UserCreationForm()
+    context['signup_form'] = form
     return render(request,'signup.djhtml',context)

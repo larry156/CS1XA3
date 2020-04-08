@@ -3,12 +3,26 @@
 {% block title %}Account Page{% endblock %}
 
 {% block middle_column %}
-    <div class="w3-row-padding">
+    <div class="w3-row-padding w3-margin-bottom">
         <div class="w3-col m12">
             <div class="w3-card w3-round w3-white">
                 <div class="w3-container w3-padding">
                     <h6 class="w3-opacity">Change Password</h6>
                     <!--                     TODO Objective 3: Add Password Change Form -->
+                    <form class="w3-center" method="post" action="{% url 'social:account_view' %}">
+                        {% csrf_token %}
+                        {% comment %} {{ pwd_form }} {% endcomment %}
+                        <label for="id_old_password"><h4>Old Password</h4></label>
+                        <input type="password" id="id_old_password" name="old_password" placeholder="Enter your current password." size="50" required>
+                        <label for="id_new_password1"><h4>Password</h4></label>
+                        <input type="password" id="id_new_password1" name="new_password1" placeholder="Enter a password." size="50" required>
+                        <label for="id_new_password2"><h4>Confirm Password</h4></label>
+                        <input type="password" id="id_new_password2" name="new_password2" placeholder="Enter the same password." size="50" required>
+                        <br><button class="w3-margin" type="submit">Change Password</button>
+                    </form>
+                    {% if pwd_invalid %}
+                        <p class="w3-margin w3-text-red w3-center">Failed to change password. Please check the form and try again.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -19,6 +33,22 @@
                 <div class="w3-container w3-padding">
                     <h6 class="w3-opacity">Update Info</h6>
                     <!--                     TODO Objective 3: Add User Info Update Forms -->
+                    <form class="w3-center" method="post" action="{% url 'social:account_view' %}">
+                        {% csrf_token %}
+                        {% comment %} {{ info_form }} {% endcomment %}
+                        <label for="id_employment"><h4>Employment</h4></label>
+                        <input type="text" id="id_employment" name="employment" placeholder="Enter your career." size="50" required>
+                        <label for="id_location"><h4>Location</h4></label>
+                        <input type="text" id="id_location" name="location" placeholder="Enter your location." size="50" required>
+                        <label for="id_birthday"><h4>Birthday</h4></label>
+                        <input type="date" id="id_birthday" name="birthday" required>
+                        <label for="id_interests"><h4>Interests</h4></label>
+                        <textarea name="interests" style="width:75%;" rows="10" placeholder="Add your interests. Separate entries using commas. Optional." id="id_interests" spellcheck="false"></textarea>
+                        <br><button class="w3-margin" type="submit">Update Info</button>
+                    </form>
+                    {% if info_invalid %}
+                        <p class="w3-margin w3-text-red w3-center">Failed to update info. Please check the form and try again.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
