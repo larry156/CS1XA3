@@ -81,7 +81,10 @@ def account_view(request):
                 #print(raw_interests)
                 for interest in raw_interests:
                     if interest != '' and not user_info.interests.filter(label__iexact=interest).exists():
-                        user_info.interests.create(label=interest)
+                        if models.Interest.objects.filter(label__iexact=interest).exists():
+                            user_info.interests.add(models.Interest.objects.filter(label__iexact=interest))
+                        else:
+                            user_info.interests.create(label=interest)
                 user_info.save()
             elif info_form.data.get('employment'):
                 #print(info_form.errors)
@@ -110,7 +113,8 @@ def people_view(request):
     if request.user.is_authenticated:
         user_info = models.UserInfo.objects.get(user=request.user)
 
-        people_to_display = request.session.get("numPeople", 1)
+        people_to_display = request.session.get('people_to_display', 1)
+        #print(people_to_display)
 
         # TODO Objective 4: create a list of all users who aren't friends to the current user (and limit size)
         all_people = models.UserInfo.objects.all()
@@ -119,13 +123,17 @@ def people_view(request):
             if person != user_info and not user_info.friends.filter(user=person.user).exists():
                 friendship_targets.append(person)
         for person in friendship_targets:
-            print(person.user.username)
+            #print(person.user.username)
+            pass
 
         # TODO Objective 5: create a list of all friend requests to current user
         friend_requests = list(models.FriendRequest.objects.filter(to_user=user_info))
         sent_requests = []
         for person in friendship_targets:
+            # disable friend request sending if this user has already sent one to that user, or vice versa
             if models.FriendRequest.objects.filter(from_user=user_info, to_user=person).exists():
+                sent_requests.append(person)
+            if models.FriendRequest.objects.filter(from_user=person, to_user=user_info).exists():
                 sent_requests.append(person)
 
         context = { 'user_info' : user_info,
@@ -229,8 +237,9 @@ def more_ppl_view(request):
     '''
     if request.user.is_authenticated:
         # update the # of people dispalyed
-        people_to_display = request.session.get("numPeople", 1)
+        people_to_display = request.session['people_to_display']
         request.session['people_to_display'] = people_to_display + 1
+        #print("Should be displaying", request.session['people_to_display'], "people.")
 
         # TODO Objective 4: increment session variable for keeping track of num ppl displayed
 
@@ -264,7 +273,7 @@ def friend_request_view(request):
             new_request = models.FriendRequest(to_user=recipient, from_user=sender)
             new_request.save()
 
-            print(str(sender) + " sent a friend request to " + str(recipient))
+            #print(str(sender) + " sent a friend request to " + str(recipient))
             # return status='success'
             return HttpResponse()
         else:
@@ -288,14 +297,31 @@ def accept_decline_view(request):
                              then returns an empty HttpResponse, 404 if POST data doesn't contain decision
     '''
     data = request.POST.get('decision')
-    if data is not None:
+    #print(type(data))
+    if data:
         # TODO Objective 6: parse decision from data
 
         if request.user.is_authenticated:
 
             # TODO Objective 6: delete FriendRequest entry and update friends in both Users
+            accepted = data[0] == 'A'
+            requester = models.UserInfo.objects.get(user=models.User.objects.get(username=data[2:]))
+            me = models.UserInfo.objects.get(user=request.user)
+            fr = models.FriendRequest.objects.get(to_user=me,from_user=requester)
+            print(fr)
+            fr.delete()
+            # # also check for any friend requests from me to requester that might exist
+            frReverse = models.FriendRequest.objects.filter(to_user=requester,from_user=me)
+            if frReverse:
+                frReverse.delete()
+
+            # add to friends
+            me.friends.add(requester)
+            requester.friends.add(me)
 
             # return status='success'
+            #print(data)
+            print(accepted, requester)
             return HttpResponse()
         else:
             return redirect('login:login_view')

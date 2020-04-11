@@ -14,7 +14,7 @@ function frResponse(data,status) {
 
 function friendRequest(event) {
     // the id of the current button, should be fr-name where name is valid username
-    let frID = event.target.id;
+    let frID = this.id;
     let json_data = { 'frID' : frID };
     // globally defined in messages.djhtml using i{% url 'social:like_view' %}
     let url_path = friend_request_url;
@@ -57,9 +57,29 @@ function submitMorePpl(event) {
    ********************************************************************************************
    */
 
+function adResponse(data,status) {
+    if (status == 'success') {
+        // reload page to update like count
+        location.reload();
+    }
+    else {
+        alert('failed to accept/decline friend request ' + status);
+    }
+}
+
 function acceptDeclineRequest(event) {
-    // TODO Objective 6: perform AJAX POST to accept or decline Friend Request
-    alert('Accept/Decline Button Pressed');
+    // the id of the current button, should be A-name or D-name where name is valid username
+    let decision = this.id;
+    let json_data = { 'decision' : decision };
+    // globally defined in messages.djhtml using i{% url 'social:accept_decline_view' %}
+    let url_path = accept_decline_url;
+    console.log(decision)
+
+    // AJAX post
+    $.post(url_path,
+           json_data,
+           adResponse);
+    //alert('Accept/Decline Button Pressed');
 }
 
 /* ********************************************************************************************

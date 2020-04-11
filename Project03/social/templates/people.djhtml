@@ -4,6 +4,7 @@
 
 {% block middle_column %}
         {% for person in friendship_targets %}
+            {% comment %} <p>Showing person {{ forloop.counter0 }} out of {{ ppl_to_display }}.</p> {% endcomment %}
             {% if forloop.counter0 < ppl_to_display %}
                 <div class="w3-container w3-card w3-white w3-round w3-margin-bottom w3-margin-left w3-margin-right"><br>
                     {% load static %}
@@ -14,7 +15,7 @@
                     <p><i class="fa fa-home fa-fw w3-margin-right w3-text-theme"></i> {{ person.location }} </p>
                     <p><i class="fa fa-birthday-cake fa-fw w3-margin-right w3-text-theme"></i> {{ person.birthday }} </p>
                         {% if person in sent_requests %}
-                            <button type="button" id="fr-{{ person.user.username }}" class="w3-button w3-theme-d1 w3-margin-bottom fr-button" disabled>Request Sent</button>
+                            <button type="button" id="fr-{{ person.user.username }}" class="w3-button w3-theme-d1 w3-margin-bottom fr-button" disabled>Request Pending</button>
                         {% else %}
                             <button type="button" id="fr-{{ person.user.username }}" class="w3-button w3-theme-d1 w3-margin-bottom fr-button">Friend Request</button>
                         {% endif %}
@@ -29,28 +30,25 @@
 {% endblock %}
 
 {% block right_column %}
-    <!-- TODO Objective 5: Use friend_requests list to render friend requests to user -->
     {% for request in friend_requests %}
         <div class="w3-card w3-round w3-white w3-center">
-        <div class="w3-container">
-          <p>Friend Request</p>
-          {% load static %}
-          <img src="{% static 'avatar.png'  %}" alt="Avatar" style="width:50%"><br>
-          <span>TODO Add Username</span>
-          <div class="w3-row w3-opacity">
-            <div class="w3-half">
-                <!-- TODO Objective 6: make id specific to user who sent request -->
-                <button id="A-USERNAME" class="w3-button w3-block w3-green w3-section acceptdecline-button" title="Accept">
-                    <i class="fa fa-check"></i></button>
+            <div class="w3-container">
+                <p>Friend Request</p>
+                {% load static %}
+                <img src="{% static 'avatar.png'  %}" alt="Avatar" style="width:50%"><br>
+                <span>{{ request.from_user.user }}</span>
+                <div class="w3-row w3-opacity">
+                    <div class="w3-half">
+                        <button id="A-{{ request.from_user.user }}" class="w3-button w3-block w3-green w3-section acceptdecline-button" title="Accept">
+                            <i class="fa fa-check"></i></button>
+                    </div>
+                    <div class="w3-half">
+                        <button id="D-{{ request.from_user.user }}" class="w3-button w3-block w3-red w3-section acceptdecline-button" title="Decline">
+                            <i class="fa fa-remove"></i></button>
+                    </div>
+                </div>
             </div>
-            <div class="w3-half">
-                <!-- TODO Objective 6: make id specific to user who sent request -->
-                <button id="D-USERNAME" class="w3-button w3-block w3-red w3-section acceptdecline-button" title="Decline">
-                    <i class="fa fa-remove"></i></button>
-            </div>
-          </div>
         </div>
-      </div>
       <br>
     {% endfor %}
 {% endblock %}
