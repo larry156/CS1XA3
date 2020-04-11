@@ -7,7 +7,7 @@ from django.contrib import messages
 from social import models
 
 def login_view(request):
-    """Serves login.djhtml from /e/macid/ (url name: login_view)
+    """Serves login.djhtml from /e/yaol13/ (url name: login_view)
     Parameters
     ----------
       request: (HttpRequest) - POST with username and password or an empty GET
@@ -36,7 +36,7 @@ def login_view(request):
     return render(request,'login.djhtml',context)
 
 def logout_view(request):
-    """Redirects to login_view from /e/macid/logout/ (url name: logout_view)
+    """Redirects to login_view from /e/yaol13/logout/ (url name: logout_view)
     Parameters
     ----------
       request: (HttpRequest) - expected to be an empty get request
@@ -52,7 +52,7 @@ def logout_view(request):
     return redirect('login:login_view')
 
 def signup_view(request):
-    """Serves signup.djhtml from /e/macid/signup (url name: signup_view)
+    """Serves signup.djhtml from /e/yaol13/signup (url name: signup_view)
     Parameters
     ----------
       request : (HttpRequest) - expected to be an empty get request

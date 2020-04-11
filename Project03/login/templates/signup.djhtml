@@ -5,13 +5,21 @@
 
 {% block middle_column %}
     <!-- TODO Objective 1: implement signup form -->
+    <h2 class="w3-center">User Creation</h2>
     <form class="w3-center" method="post" action="{% url 'login:signup_view' %}">
         {% csrf_token %}
         {% comment %} {{ signup_form }} {% endcomment %}
         <label for="id_username"><h4>Username</h4></label>
         <input type="text" id="id_username" name="username" placeholder="Enter a username." size="50" required>
+        <p class="w3-text-grey">{{ signup_form.username.help_text }}</p>
         <label for="id_password1"><h4>Password</h4></label>
         <input type="password" id="id_password1" name="password1" placeholder="Enter a password." size="50" required>
+        <p class="w3-text-grey">
+            Your password can’t be too similar to your other personal information.<br>
+            Your password must contain at least 8 characters.<br>
+            Your password can’t be a commonly used password.<br>
+            Your password can’t be entirely numeric.
+        </p>
         <label for="id_password2"><h4>Confirm Password</h4></label>
         <input type="password" id="id_password2" name="password2" placeholder="Enter the same password." size="50" required>
         <br><button class="w3-margin" type="submit">Create Account</button>

@@ -54,18 +54,17 @@ def account_view(request):
 
         user_info = models.UserInfo.objects.get(user=request.user)
 
-        # TODO Objective 3: Create Forms and Handle POST to Update UserInfo / Password
         if request.method == 'POST':
             pwd_form = PasswordChangeForm(user=request.user, data=request.POST)
             info_form = models.UserInfoForm(request.POST)
 
             # Changing Password
             if pwd_form.is_valid():
-                print("Changed password")
+                #print("Changed password")
                 request.user.set_password(pwd_form.cleaned_data.get('new_password1'))
                 request.user.save()
-            else:
-                print(pwd_form.errors)
+            elif pwd_form.data.get('old_password'): # Don't display an error message if they're not changing the password
+                #print(pwd_form.errors)
                 pwd_invalid = True
 
             # User Info
@@ -75,12 +74,16 @@ def account_view(request):
                 user_info.location = info_form.cleaned_data.get('location')
                 user_info.birthday = info_form.cleaned_data.get('birthday')
                 raw_interests = request.POST.get('interests').split(',')
+                # clear duplicates
+                for i in range(len(raw_interests)):
+                    raw_interests[i] = raw_interests[i].strip()
+                raw_interests = list(set(raw_interests)) 
                 #print(raw_interests)
                 for interest in raw_interests:
-                    if interest != '':
+                    if interest != '' and not user_info.interests.filter(label__iexact=interest).exists():
                         user_info.interests.create(label=interest)
                 user_info.save()
-            else:
+            elif info_form.data.get('employment'):
                 #print(info_form.errors)
                 info_invalid = True
         
@@ -106,15 +109,31 @@ def people_view(request):
     """
     if request.user.is_authenticated:
         user_info = models.UserInfo.objects.get(user=request.user)
+
+        people_to_display = request.session.get("numPeople", 1)
+
         # TODO Objective 4: create a list of all users who aren't friends to the current user (and limit size)
-        all_people = []
+        all_people = models.UserInfo.objects.all()
+        friendship_targets = []
+        for person in all_people:
+            if person != user_info and not user_info.friends.filter(user=person.user).exists():
+                friendship_targets.append(person)
+        for person in friendship_targets:
+            print(person.user.username)
 
         # TODO Objective 5: create a list of all friend requests to current user
-        friend_requests = []
+        friend_requests = list(models.FriendRequest.objects.filter(to_user=user_info))
+        sent_requests = []
+        for person in friendship_targets:
+            if models.FriendRequest.objects.filter(from_user=user_info, to_user=person).exists():
+                sent_requests.append(person)
 
         context = { 'user_info' : user_info,
                     'all_people' : all_people,
-                    'friend_requests' : friend_requests }
+                    'friendship_targets' : friendship_targets,
+                    'ppl_to_display' : people_to_display,
+                    'friend_requests' : friend_requests,
+                    'sent_requests' : sent_requests }
 
         return render(request,'people.djhtml',context)
 
@@ -210,6 +229,8 @@ def more_ppl_view(request):
     '''
     if request.user.is_authenticated:
         # update the # of people dispalyed
+        people_to_display = request.session.get("numPeople", 1)
+        request.session['people_to_display'] = people_to_display + 1
 
         # TODO Objective 4: increment session variable for keeping track of num ppl displayed
 
@@ -238,7 +259,12 @@ def friend_request_view(request):
 
         if request.user.is_authenticated:
             # TODO Objective 5: add new entry to FriendRequest
+            sender = models.UserInfo.objects.get(user=request.user)
+            recipient = models.UserInfo.objects.get(user=models.User.objects.get(username=username))
+            new_request = models.FriendRequest(to_user=recipient, from_user=sender)
+            new_request.save()
 
+            print(str(sender) + " sent a friend request to " + str(recipient))
             # return status='success'
             return HttpResponse()
         else:

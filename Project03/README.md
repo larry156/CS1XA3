@@ -22,18 +22,23 @@ Note: Make sure you are in the /CS1XA3/Project03/ directory, which is where mana
 
 Once you're on the site, log in with username "TestUser", password "1234"
 
-## Objective 01
+## Objective 01 - Login & Signup
 
 **Description**:
 
-this feature is displayed in something.djhtml which is rendered by
-some_view
-it makes a POST Request to from something.js to /e/macid/something_post
-which is handled by someting_post_view
+The login functionality has been left more or less identical to the given template. It is displayed in `login.djhtml`, and is rendered by `login_view`.
+Logging in makes a POST request to `/e/yaol13/` which is handled by `login_view`, and if the user successfully logs in, they are redirected to `/e/yaol13/social/messages/`.
+The signup/user creation functionality utilizes Django's built-in `UserCreationForm` as a base, but the HTML has been altered, which you can see in `signup.djhtml`.
+`signup.djhtml` is rendered by `signup_view`, and the HTML form makes a POST request to `/e/yaol13/signup`, which is handled by `signup_view`.
+If the form is valid, a new UserInfo object is created with the given username and password, and the new user is automatically logged in.
 
 **Exceptions**:
 
-If the /e/macid/something_post is called without arguments is redirects
-to login.djhtml
+If the login request fails to authenticate, the user is redirected back to `login.djhtml`.
+If the form data in the POST to `/e/yaol13/signup/` is invalid, an error message is displayed in `signup.djhtml`, and a new user is *not* created.
+
+**Note**:
+
+It appears that usernames are case-sensitive, so be mindful of that when logging in or signing up.
 
 ## Objective 02

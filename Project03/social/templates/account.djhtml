@@ -14,8 +14,14 @@
                         {% comment %} {{ pwd_form }} {% endcomment %}
                         <label for="id_old_password"><h4>Old Password</h4></label>
                         <input type="password" id="id_old_password" name="old_password" placeholder="Enter your current password." size="50" required>
-                        <label for="id_new_password1"><h4>Password</h4></label>
+                        <label for="id_new_password1"><h4>New Password</h4></label>
                         <input type="password" id="id_new_password1" name="new_password1" placeholder="Enter a password." size="50" required>
+                        <p class="w3-text-grey">
+                            Your password can’t be too similar to your other personal information.<br>
+                            Your password must contain at least 8 characters.<br>
+                            Your password can’t be a commonly used password.<br>
+                            Your password can’t be entirely numeric.
+                        </p>
                         <label for="id_new_password2"><h4>Confirm Password</h4></label>
                         <input type="password" id="id_new_password2" name="new_password2" placeholder="Enter the same password." size="50" required>
                         <br><button class="w3-margin" type="submit">Change Password</button>
