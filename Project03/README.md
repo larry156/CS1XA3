@@ -41,4 +41,13 @@ If the form data in the POST to `/e/yaol13/signup/` is invalid, an error message
 
 It appears that usernames are case-sensitive, so be mindful of that when logging in or signing up.
 
-## Objective 02
+## Objective 02 - User Profile & Interests
+
+**Description**:
+
+A user's basic info (username, employment, location, birthday, and interests) is displayed in the `left_column` block of `social_base.djhtml`, and is rendered by any view that utilizes a template based on this file (i.e. `messages_view`, `people_view`, and `account_view`). The current user's userinfo is passed to the template's context, and this userinfo object is used to display their info as text on the webpage. Each interest of a user is displayed as a tag in the "Interests" card.
+
+**Exceptions**:
+
+If a user has not set their employment, location, or birthday, those sections will say "Unspecified", "Unspecified", and "None", respectively. If a user has no interests, the
+"Interests" card will still appear on the webpage, but will be empty.
