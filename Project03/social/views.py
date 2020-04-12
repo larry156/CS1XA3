@@ -116,7 +116,7 @@ def people_view(request):
         people_to_display = request.session.get('people_to_display', 1)
         #print(people_to_display)
 
-        # TODO Objective 4: create a list of all users who aren't friends to the current user (and limit size)
+        # get people who haven't been befriended already
         all_people = models.UserInfo.objects.all()
         friendship_targets = []
         for person in all_people:
@@ -126,7 +126,7 @@ def people_view(request):
             #print(person.user.username)
             pass
 
-        # TODO Objective 5: create a list of all friend requests to current user
+        # get list of pending friend requests to this user
         friend_requests = list(models.FriendRequest.objects.filter(to_user=user_info))
         sent_requests = []
         for person in friendship_targets:
@@ -236,8 +236,8 @@ def more_ppl_view(request):
    	  out : (HttpResponse) - should return an empty HttpResponse after updating the num ppl sessions variable
     '''
     if request.user.is_authenticated:
-        # update the # of people dispalyed
-        people_to_display = request.session['people_to_display']
+        # update the # of people displayed
+        people_to_display = request.session.get('people_to_display', 1)
         request.session['people_to_display'] = people_to_display + 1
         #print("Should be displaying", request.session['people_to_display'], "people.")
 

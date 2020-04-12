@@ -77,8 +77,49 @@ to the user's interests if that interest is not already present (case-insensitiv
 **Exceptions**:
 
 For data in `pwd_form` to be valid, the "Old Password" field must match a user's current password, "New Password" must fulfill the given requirements, and
-"Confirm Password" must match "New Password".
+"Confirm Password" must match "New Password". If the user is not authenticated, then they will be redirected to the login page.
 
 **Note**:
 
 Upon changing their password, users will remain logged in. If no interests are entered in `info_form`, then no interests will be added.
+
+## Objective 04 - Displaying People List
+
+**Description**:
+
+The people page is displayed in `people.djhtml` and is rendered bu `people_view`. It can be accessed by clicking the people icon on the Navbar.
+Upon loading, the page retrieves a list of all users that are not the current user or a friend of the current user, called `friendship_targets`. It then retrieves
+a list, `friend_requests`, of all FriendRequest objects to the current user, and another list, `sent_requests`, of all friend requests involving the current user
+(i.e. either to or from the user). These lists are then passed to `people.djhtml`.
+
+In the `people.djhtml` template, the middle column displays all users in `friendship_targets` using a for loop. Using the session variable `people_to_display`, which
+is an integer starting at 1, the page will display that many users. At the bottom is a button labelled "More", which, when clicked, makes an empty AJAX POST to
+`more_ppl_view`, which increments the session variable `people_to_display` by 1 and returns an empty HTTP response (which, in effect, reloads the page).
+
+**Exceptions**:
+
+If the amount of people that can be displayed in total is lower than `people_to_display`, the page will show everyone that it can.
+(e.g. if the user clicks "More" 5 times, but there are only 3 users, the page will only show 3 users.)
+If the user is not authenticated, then they will be redirected to the login page.
+
+
+## Objective 05 - Sending Friend Requests
+
+**Description**:
+
+In the `people.djhtml` template, the middle column displays all users in `friendship_targets` using a for loop. Using the session variable `people_to_display`, which
+is an integer starting at 1, the page will display that many users. At the bottom is a button labelled "More", which, when clicked, makes an empty AJAX POST to
+`more_ppl_view`, which increments the session variable `people_to_display` by 1 and returns an empty HTTP response (which, in effect, reloads the page).
+
+TODO
+    Each user is displayed on a card, which
+    has a button allowing the current user to send a friend request to them. The current user will be unable to send a friend request if there already exists
+    a FriendRequest object involving the two users. Upon clicking the button, an AJAX POST request is made to `friend_request_view` containing the button's ID,
+    which will be of the form ```javascript "fr-<NAME>"```, where `<NAME>` is the recipient's username. A new FriendRequest object is then created, with
+    `to_user` and `from_user` being the recipient and sender of the friend request, respectively, and the page is reloaded.
+
+**Exceptions**:
+
+    If the amount of people that can be displayed in total is lower than `people_to_display`, the page will show everyone that it can.
+    (e.g. if the user clicks "More" 5 times, but there are only 3 users, the page will only show 3 users.)
+    If the user is not authenticated, then they will be redirected to the login page.
