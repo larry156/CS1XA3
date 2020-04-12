@@ -102,7 +102,6 @@ If the amount of people that can be displayed in total is lower than `people_to_
 (e.g. if the user clicks "More" 5 times, but there are only 3 users, the page will only show 3 users.)
 If the user is not authenticated, then they will be redirected to the login page.
 
-
 ## Objective 05 - Sending Friend Requests
 
 **Description**:
