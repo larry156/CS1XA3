@@ -2,9 +2,27 @@
    | Handle Submitting Posts - called by $('#post-button').click(submitPost)
    ********************************************************************************************
    */
+
+function submitPostResponse(data,status) {
+    if (status == 'success') {
+        // reload page to display new Post
+        location.reload();
+    }
+    else {
+        alert('failed to submit post' + status);
+    }
+}
+
 function submitPost(event) {
-    alert('Post Button Pressed');
-    // TODO Objective 8: send contents of post-text via AJAX Post to post_submit_view (reload page upon success)
+    let json_data = {  'postContent' : $('#post-text').text() };
+    let max_length = 280;
+    if (json_data['postContent'].length > max_length) {
+        alert("Your post exceeds the " + max_length + " character limit.");
+        return;
+    }
+    let url_path = post_submit_url;
+    //alert('Posting ' + json_data['postContent']);
+    $.post(url_path, json_data, submitPostResponse);
 }
 
 /* ********************************************************************************************

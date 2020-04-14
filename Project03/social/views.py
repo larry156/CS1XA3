@@ -21,7 +21,9 @@ def messages_view(request):
 
 
         # TODO Objective 9: query for posts (HINT only return posts needed to be displayed)
-        posts = []
+        posts = models.Post.objects.all().order_by("-timestamp")
+        posts_to_display = request.session.get('num_posts', 1)
+        posts = posts[:posts_to_display]
 
         # TODO Objective 10: check if user has like post, attach as a new attribute to each post
 
@@ -193,10 +195,13 @@ def post_submit_view(request):
                              or 404 if any error occurs
     '''
     postContent = request.POST.get('postContent')
+    user_info = models.UserInfo.objects.get(user=request.user)
     if postContent is not None:
         if request.user.is_authenticated:
 
             # TODO Objective 8: Add a new entry to the Post model
+            newPost = models.Post(owner=user_info, content=postContent)
+            newPost.save()
 
             # return status='success'
             return HttpResponse()
@@ -218,7 +223,8 @@ def more_post_view(request):
     if request.user.is_authenticated:
         # update the # of posts dispalyed
 
-        # TODO Objective 9: update how many posts are displayed/returned by messages_view
+        posts_to_display = request.session.get('num_posts', 1)
+        request.session['num_posts'] = posts_to_display + 1
 
         # return status='success'
         return HttpResponse()
@@ -240,8 +246,6 @@ def more_ppl_view(request):
         people_to_display = request.session.get('people_to_display', 1)
         request.session['people_to_display'] = people_to_display + 1
         #print("Should be displaying", request.session['people_to_display'], "people.")
-
-        # TODO Objective 4: increment session variable for keeping track of num ppl displayed
 
         # return status='success'
         return HttpResponse()
