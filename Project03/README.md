@@ -109,7 +109,7 @@ If the user is not authenticated, then they will be redirected to the login page
 Each user rendered in `people.djhtml` is displayed on a card, which has a button allowing the current user to send a friend request to them.
 The current user will be unable to send a friend request if there already exists a FriendRequest object involving the two users.
 Upon clicking the button, an AJAX POST request is made to `friend_request_view` containing the button's ID,
-which will be of the form ```javascript "fr-<NAME>"```, where `<NAME>` is the recipient's username. A new FriendRequest object is then created, with
+which will be of the form ```JavaScript "fr-<NAME>"```, where `<NAME>` is the recipient's username. A new FriendRequest object is then created, with
 `to_user` and `from_user` being the recipient and sender of the friend request, respectively, and the page is reloaded.
 
 **Note**:
