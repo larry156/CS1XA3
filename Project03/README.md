@@ -106,19 +106,22 @@ If the user is not authenticated, then they will be redirected to the login page
 
 **Description**:
 
-In the `people.djhtml` template, the middle column displays all users in `friendship_targets` using a for loop. Using the session variable `people_to_display`, which
-is an integer starting at 1, the page will display that many users. At the bottom is a button labelled "More", which, when clicked, makes an empty AJAX POST to
-`more_ppl_view`, which increments the session variable `people_to_display` by 1 and returns an empty HTTP response (which, in effect, reloads the page).
+Each user rendered in `people.djhtml` is displayed on a card, which has a button allowing the current user to send a friend request to them.
+The current user will be unable to send a friend request if there already exists a FriendRequest object involving the two users.
+Upon clicking the button, an AJAX POST request is made to `friend_request_view` containing the button's ID,
+which will be of the form ```javascript "fr-<NAME>"```, where `<NAME>` is the recipient's username. A new FriendRequest object is then created, with
+`to_user` and `from_user` being the recipient and sender of the friend request, respectively, and the page is reloaded.
+
+**Note**:
+
+"A FriendRequest object involving the two users" clarification: Say, for example, Jimmy sends a friend request to Timmy.
+Timmy cannot, then, send another friend request to Jimmy, as there is already a friend request involving Jimmy and Timmy.
+
+As a user's existing friends are not displayed in the list of people, a user is unable to send friend requests to their friends.
+Likewise, users cannot send friend requests to themselves.
+
+## Objective 06 - Accepting/Declining Friend Requests
+
+**Description**:
 
 TODO
-    Each user is displayed on a card, which
-    has a button allowing the current user to send a friend request to them. The current user will be unable to send a friend request if there already exists
-    a FriendRequest object involving the two users. Upon clicking the button, an AJAX POST request is made to `friend_request_view` containing the button's ID,
-    which will be of the form ```javascript "fr-<NAME>"```, where `<NAME>` is the recipient's username. A new FriendRequest object is then created, with
-    `to_user` and `from_user` being the recipient and sender of the friend request, respectively, and the page is reloaded.
-
-**Exceptions**:
-
-    If the amount of people that can be displayed in total is lower than `people_to_display`, the page will show everyone that it can.
-    (e.g. if the user clicks "More" 5 times, but there are only 3 users, the page will only show 3 users.)
-    If the user is not authenticated, then they will be redirected to the login page.
