@@ -29,9 +29,29 @@ function submitPost(event) {
    | Handle Liking Posts - called by $('.like-button').click(submitLike)
    ********************************************************************************************
    */
+
+function submitLikeResponse(data,status) {
+    if (status == 'success') {
+        // reload page to display new Post
+        location.reload();
+    }
+    else {
+        alert('failed to like post' + status);
+    }
+}
+
 function submitLike(event) {
-    alert('Like Button Pressed');
-    // TODO Objective 10: send post-n id via AJAX POST to like_view (reload page upon success)
+    //alert('Like Button Pressed');
+    // the id of the current button, should be fr-name where name is valid username
+    let postID = this.id;
+    let json_data = { 'postID' : postID };
+    // globally defined in messages.djhtml using i{% url 'social:like_view' %}
+    let url_path = like_post_url;
+
+    // AJAX post
+    $.post(url_path,
+           json_data,
+           submitLikeResponse);
 }
 
 /* ********************************************************************************************

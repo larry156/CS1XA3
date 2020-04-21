@@ -20,7 +20,6 @@ def messages_view(request):
         user_info = models.UserInfo.objects.get(user=request.user)
 
 
-        # TODO Objective 9: query for posts (HINT only return posts needed to be displayed)
         posts = models.Post.objects.all().order_by("-timestamp")
         posts_to_display = request.session.get('num_posts', 1)
         posts = posts[:posts_to_display]
@@ -169,11 +168,14 @@ def like_view(request):
     postIDReq = request.POST.get('postID')
     if postIDReq is not None:
         # remove 'post-' from postID and convert to int
-        # TODO Objective 10: parse post id from postIDReq
-        postID = 0
+        postID = int(postIDReq[5:])
+        print(postID)
 
         if request.user.is_authenticated:
-            # TODO Objective 10: update Post model entry to add user to likes field
+            posts = models.Post.objects.all().order_by("-timestamp")
+            likedPost = posts[postID]
+            if not likedPost.likes.filter(user=request.user).exists():
+                likedPost.likes.add(models.UserInfo.objects.get(user=request.user))
 
             # return status='success'
             return HttpResponse()
@@ -199,7 +201,6 @@ def post_submit_view(request):
     if postContent is not None:
         if request.user.is_authenticated:
 
-            # TODO Objective 8: Add a new entry to the Post model
             newPost = models.Post(owner=user_info, content=postContent)
             newPost.save()
 
