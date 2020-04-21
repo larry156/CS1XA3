@@ -118,6 +118,11 @@ The current user will be unable to send a friend request if there already exists
 Upon clicking the button, an AJAX POST request is made to `friend_request_view` containing the button's ID,
 which will be of the form `fr-<NAME>`, where `<NAME>` is the recipient's username. A new FriendRequest object is then created, with
 `to_user` and `from_user` being the recipient and sender of the friend request, respectively, and the page is reloaded.
+All friend request buttons have a jQuery event attached to them in `people.js`, and the POST is sent using the `friendRequest` and `frResponse` functions
+defined within that file.
+
+In the right column of `people.djhtml`, a list of all friend requests to the current user (i.e. the friend request's `to_user` is the current user) is displayed.
+Each friend request contains the sender's username and picture, as well as two buttons allowing the current user to either accept or decline the request.
 
 **Note**:
 
@@ -127,8 +132,46 @@ Timmy cannot, then, send another friend request to Jimmy, as there is already a 
 As a user's existing friends are not displayed in the list of people, a user is unable to send friend requests to their friends.
 Likewise, users cannot send friend requests to themselves.
 
+**Exceptions**:
+
+If, for whatever reason, sending the AJAX POST fails, an alert is displayed informing the user of this failure.
+If the user is not authenticated, then they will be redirected to the login page.
+
 ## Objective 06 - Accepting/Declining Friend Requests
 
 **Description**:
 
-TODO
+When a user either accepts or declines a friend request using the buttons mentioned above, an AJAX POST is made to `accept_decline_view` containing
+the appropriate button's ID, which will be either `A-<NAME>`, or `D-<NAME>`, where `<NAME>` is the username of whoever sent the friend request.
+This functionality is handled within `people.js`, by the `acceptDeclineRequest` and `adResponse` functions.
+
+In `accept_decline_view`, the script determines whether the user accepted or declined the friend request based on the data sent in the POST:
+
+```python
+accepted = data[0] == 'A'
+```
+
+(`data` is a string containing the POST data. If the user accepted the request, then the first character would be "A".)
+The script then gets the UserInfo objects of whoever sent the friend request (`requester`), and the current user (`me`), and deletes
+the friend request from `requester` to `me`, as well as the friend request from `me` to `requester`, if that exists for whatever reason.
+Finally, both users are added to eachother's friend lists (i.e. the `friends` field in their UserInfo), and the page is reloaded.
+
+**Exceptions**:
+
+If, for whatever reason, sending the AJAX POST fails, an alert is displayed informing the user of this failure.
+If the user is not authenticated, then they will be redirected to the login page.
+
+## Objective 07 - Displaying Friends
+
+**Description**:
+
+A user's friends are displayed in the right column of `messages.djhtml`, which is rendered by `messages_view` in `social/views.py`.
+`messages_view` passes the current user's UserInfo to the Django template through the context dictionary, and the template
+displays each friend by iterating through the current user's `friends` field using a for loop.
+
+Each friend of the user is displayed on a card, labelled "Friend", which shows their username and avatar.
+
+**Exceptions**:
+
+If the current user has no friends, then the right column of `messages.djhtml` will just be empty.
+If the user is not authenticated, then they will be redirected to the login page.

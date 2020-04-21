@@ -24,7 +24,6 @@
             <p>{{ post.content }}</p>
             <hr class="w3-clear">
             
-            <!-- TODO Objective 10: Add Post id and likes count -->
             {% if user_info in post.likes.all %}
               <button type="button" class="w3-button w3-theme-d1 w3-margin-bottom w3-disabled" id="post-{{ forloop.counter0 }}">
                 <i class="fa fa-thumbs-up"></i>  Liked</button>
