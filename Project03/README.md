@@ -34,10 +34,10 @@ Once you're on the site, log in with username "TestUser", password "1234" or cre
 **Description**:
 
 The login functionality has been left more or less identical to the given template. It is displayed in `login.djhtml`, and is rendered by `login_view`.
-Logging in makes a POST request to `/e/yaol13/` which is handled by `login_view`, and if the user successfully logs in, they are redirected to `/e/yaol13/social/messages/`.
+Logging in makes a POST request to `/e/yaol13/` which is handled by `login_view` in `login/views.py`, and if the user successfully logs in, they are redirected to `/e/yaol13/social/messages/`.
 
 The signup/user creation functionality utilizes Django's built-in `UserCreationForm` as a base, but the HTML has been altered, which you can see in `signup.djhtml`.
-`signup.djhtml` is rendered by `signup_view`, and the HTML form makes a POST request to `/e/yaol13/signup`, which is handled by `signup_view`.
+`signup.djhtml` is rendered by `signup_view`, and the HTML form makes a POST request to `/e/yaol13/signup`, which is handled by `signup_view` in `login/views.py`.
 If the form is valid, a new UserInfo object is created with the given username and password, and the new user is automatically logged in.
 
 **Exceptions**:
@@ -55,6 +55,10 @@ has been entered. Users are required to fill out each field in these forms befor
 **Description**:
 
 A user's basic info (username, employment, location, birthday, and interests) is displayed in the `left_column` block of `social_base.djhtml`, and is rendered by any view that utilizes a template based on this file (i.e. `messages_view`, `people_view`, and `account_view`). The current user's userinfo is passed to the template's context, and this userinfo object is used to display their info as text on the webpage. Each interest of a user is displayed as a tag in the "Interests" card.
+
+**Note**:
+
+From this point on in the README, all views are assumed to be found in `social/views.py`.
 
 **Exceptions**:
 
@@ -141,8 +145,8 @@ If the user is not authenticated, then they will be redirected to the login page
 
 **Description**:
 
-When a user either accepts or declines a friend request using the buttons mentioned above, an AJAX POST is made to `accept_decline_view` containing
-the appropriate button's ID, which will be either `A-<NAME>`, or `D-<NAME>`, where `<NAME>` is the username of whoever sent the friend request.
+When a user either accepts or declines a friend request using the buttons mentioned above, an AJAX POST is made to `accept_decline_view`
+containing the appropriate button's ID, which will be either `A-<NAME>`, or `D-<NAME>`, where `<NAME>` is the username of whoever sent the friend request.
 This functionality is handled within `people.js`, by the `acceptDeclineRequest` and `adResponse` functions.
 
 In `accept_decline_view`, the script determines whether the user accepted or declined the friend request based on the data sent in the POST:
@@ -165,7 +169,7 @@ If the user is not authenticated, then they will be redirected to the login page
 
 **Description**:
 
-A user's friends are displayed in the right column of `messages.djhtml`, which is rendered by `messages_view` in `social/views.py`.
+A user's friends are displayed in the right column of `messages.djhtml`, which is rendered by `messages_view`.
 `messages_view` passes the current user's UserInfo to the Django template through the context dictionary, and the template
 displays each friend by iterating through the current user's `friends` field using a for loop.
 
@@ -174,4 +178,71 @@ Each friend of the user is displayed on a card, labelled "Friend", which shows t
 **Exceptions**:
 
 If the current user has no friends, then the right column of `messages.djhtml` will just be empty.
+If the user is not authenticated, then they will be redirected to the login page.
+
+## Objective 08 - Submitting Posts
+
+**Description**:
+
+On the top of the middle column of `messages.djhtml`, there is a text field and submit button that allows users to write and submit posts.
+Clicking the submit button runs the `submitPost` function in `messages.js`, which gets the content of that text field and sends it to
+`post_submit_view` in an AJAX POST.
+
+`post_submit_view` receives this data, gets the UserInfo of the current user, and, if the social media post isn't empty, creates
+a new Post object with the `owner` being the current user, and the `content` being the data of the HTTP POST. This new Post is then
+saved to the database, and the page is reloaded.
+
+**Exceptions**:
+
+Submitting a post will fail if the text field is empty. To the user, this will appear as if nothing has happened.
+If the length of the post exceeds the 280 character limit, an alert is displayed on the user's screen, and no POST request is made.
+If, for whatever reason, sending the AJAX POST fails, an alert is displayed informing the user of this failure.
+If the user is not authenticated, then they will be redirected to the login page.
+
+## Objective 09 - Displaying Post List
+
+**Description**:
+
+Any posts in the database will be displayed in the middle column of `messages.djhtml`, below the form for submitting posts.
+These posts are ordered chronologically, with the newest post appearing first. Only one post is displayed at first; if the user clicks on
+the "More" button at the bottom of the page, then more posts will be loaded. Each click of the button results in another post being loaded.
+
+This functionality is implemented in `messages_view`, and `more_posts_view`. Within `messages_view` gets *n* Post objects, (where *n* is
+the number of posts to display), and passes them to `messages.djhtml` as a list of Posts. This list is ordered by the post's timestamp,
+so the newest post is first in the list. *n* is implemented as the session variable `people_to_display`, which starts at 1, and is incremented by 1
+each time a POST request is made to `more_posts_view`. Each time the user clicks the button labelled "More" on the webpage, an empty AJAX POST is made
+to `more_posts_view`.
+
+In `messages.djhtml`, a for loop renders each post in the list passed by `messages_view`. Each post displays the avatar and username of whoever
+submitted the post, as well as it's content, a timestamp (i.e. when the post was made), a button to "Like" the post, and the number of likes the post has.
+
+**Exceptions**:
+
+If no posts have been made, then the page will display no posts. Likewise, if, for example, the user presses the "More" button 10 times (so `people_to_display`
+would be 11), but there are only 5 posts, then only 5 posts will be displayed.
+If, for whatever reason, sending the AJAX POST fails, an alert is displayed informing the user of this failure.
+If the user is not authenticated, then they will be redirected to the login page.
+
+## Objective 10 - Liking Posts (and Displaying Like Count)
+
+**Description**:
+
+Each object of the Post model has a `likes` field, which is a list of UserInfo objects representing the users who have liked the post.
+`messages.djhtml` uses the length of this list to show how many people have liked the post, like so:
+
+```html
+<span class="w3-button w3-theme-d1 w3-margin-bottom">{{ post.likes.count }} Likes</span>
+```
+
+When the user "likes" a post by pressing the Like button, an AJAX POST is made to `like_view` containing the ID of the button.
+This ID is of the form `post-<i>`, where `<i>` is the index of that particular post in the list of all Post objects, in reverse chronological order (newest first).
+In `like_view`, the script retrieves the liked post using that index, and adds the current user's UserInfo to the post's `likes` field, if it is not already there.
+The page is then reloaded.
+
+If the current user has already liked a post, then the "Like" button will be disabled for that post, and its text will be changed to "Liked".
+This, in addition to the check mentioned above, prevents the user from "double-liking" a post.
+
+**Exceptions**:
+
+If, for whatever reason, sending the AJAX POST fails, an alert is displayed informing the user of this failure.
 If the user is not authenticated, then they will be redirected to the login page.

@@ -24,8 +24,6 @@ def messages_view(request):
         posts_to_display = request.session.get('num_posts', 1)
         posts = posts[:posts_to_display]
 
-        # TODO Objective 10: check if user has like post, attach as a new attribute to each post
-
         context = { 'user_info' : user_info
                   , 'posts' : posts }
         return render(request,'messages.djhtml',context)
@@ -198,7 +196,7 @@ def post_submit_view(request):
     '''
     postContent = request.POST.get('postContent')
     user_info = models.UserInfo.objects.get(user=request.user)
-    if postContent is not None:
+    if postContent:
         if request.user.is_authenticated:
 
             newPost = models.Post(owner=user_info, content=postContent)
