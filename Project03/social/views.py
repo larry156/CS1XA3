@@ -270,7 +270,6 @@ def friend_request_view(request):
         username = frID[3:]
 
         if request.user.is_authenticated:
-            # TODO Objective 5: add new entry to FriendRequest
             sender = models.UserInfo.objects.get(user=request.user)
             recipient = models.UserInfo.objects.get(user=models.User.objects.get(username=username))
             new_request = models.FriendRequest(to_user=recipient, from_user=sender)
@@ -302,11 +301,9 @@ def accept_decline_view(request):
     data = request.POST.get('decision')
     #print(type(data))
     if data:
-        # TODO Objective 6: parse decision from data
 
         if request.user.is_authenticated:
 
-            # TODO Objective 6: delete FriendRequest entry and update friends in both Users
             accepted = data[0] == 'A'
             requester = models.UserInfo.objects.get(user=models.User.objects.get(username=data[2:]))
             me = models.UserInfo.objects.get(user=request.user)

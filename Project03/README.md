@@ -246,3 +246,44 @@ This, in addition to the check mentioned above, prevents the user from "double-l
 
 If, for whatever reason, sending the AJAX POST fails, an alert is displayed informing the user of this failure.
 If the user is not authenticated, then they will be redirected to the login page.
+
+## Objective 11 - Create a Test Database
+
+**Description**:
+
+This section is a list of all test users of the site. You can see them below.
+
+```
+Username: TestUser
+Password: 1234
+```
+
+```
+Username: Faux_Pas
+Password: RepulsiveConcept
+```
+
+```
+Username: Brindleberry
+Password: megafish
+```
+
+```
+Username: SuperFriend
+Password: magicoffriendship
+```
+
+```
+Username: AnotherTester
+Password: somepassword
+```
+
+```
+Username: Jimmy_Neutron
+Password: brainblast
+```
+
+```
+Username: Bot001
+Password: beepboop
+```

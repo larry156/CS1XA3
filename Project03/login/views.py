@@ -44,7 +44,7 @@ def logout_view(request):
     -------
       out: (HttpResponse) - perform User logout and redirects to login_view
     """
-    # TODO Objective 4 and 9: reset sessions variables
+    # session variables get wiped upon logging out already so no need to do that again.
 
     # logout user
     logout(request)
