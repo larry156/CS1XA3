@@ -24,8 +24,7 @@ Run on mac1xa3.ca with
 python manage.py runserver localhost:10114
 ```
 
-Note: Make sure you are in the /CS1XA3/Project03/ directory, which is where manage.py is located. The site is accessible from localhost:[port]/e/yaol13/, where [port] is either
-8000 on your local machine, or 10114 on mac1xa3.ca.
+Note: Make sure you are in the /CS1XA3/Project03/ directory, which is where manage.py is located. The site is accessible from either localhost:8000/e/yaol13/, or mac1xa3.ca/e/yaol13, depending on where you're running the server.
 
 Once you're on the site, log in with username "TestUser", password "1234" or create your own user account.
 
