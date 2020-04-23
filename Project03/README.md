@@ -289,3 +289,8 @@ Password: brainblast
 Username: Bot001
 Password: beepboop
 ```
+
+```
+Username: Bobby_Tables
+Password: nosqlpls
+```
