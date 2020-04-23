@@ -294,3 +294,8 @@ Password: beepboop
 Username: Bobby_Tables
 Password: nosqlpls
 ```
+
+```
+Username: IsSoMeta
+Password: EvenThisAcronym
+```
