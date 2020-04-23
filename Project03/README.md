@@ -253,6 +253,8 @@ If the user is not authenticated, then they will be redirected to the login page
 
 This section is a list of all test users of the site. You can see them below.
 
+**Users**:
+
 ```
 Username: TestUser
 Password: 1234
